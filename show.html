@@ -1,0 +1,1897 @@
+<!doctype html>
+
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+  data-assets-path="./assets/" data-template="vertical-menu-template-starter" data-bs-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Plan Details</title>
+
+  <!-- Supabase config: anon/public API key (publishable) -->
+  <meta name="supabase-key" content="sb_publishable_E6ypS6wMqOvSeiFbGZCJUQ_KDXIUp2K" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="./assets/img/favicon/favicon.ico" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/vendor/fonts/iconify-icons.css" />
+
+  <!-- Core CSS -->
+  <!-- build:css assets/vendor/css/theme.css  -->
+
+  <link rel="stylesheet" href="./assets/vendor/libs/pickr/pickr-themes.css" />
+
+  <link rel="stylesheet" href="./assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="./assets/css/demo.css" />
+
+  <!-- Vendors CSS -->
+
+  <link rel="stylesheet" href="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+  <!-- endbuild -->
+
+  <!-- Page CSS -->
+
+  <!-- Helpers -->
+  <script src="./assets/vendor/js/helpers.js"></script>
+  <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+
+  <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+  <script src="./assets/vendor/js/template-customizer.js"></script>
+
+  <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+
+  <script src="./assets/js/config.js"></script>
+  <script>
+    window.__SUPABASE_CONFIG = {
+      url: "https://pfqqsyboqnscqhblhnwx.supabase.co",
+      key: document.querySelector('meta[name="supabase-key"]')
+        ? document.querySelector('meta[name="supabase-key"]').content
+        : "",
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/umd/supabase.min.js"
+    onerror="console.error('Failed to load Supabase SDK')"></script>
+  <script>
+    // Auth Guard: If not logged in, redirect to login page immediately
+    (async function checkAuth() {
+      try {
+        const cfg = window.__SUPABASE_CONFIG || {};
+        const supabase = window.supabase.createClient(cfg.url, cfg.key);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          window.location.href = "./login.html";
+        }
+      } catch (err) {
+        console.error("Auth guard check failed", err);
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- Layout wrapper -->
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <!-- Menu -->
+
+      <aside id="layout-menu" class="layout-menu menu-vertical menu">
+        <div class="app-brand demo">
+          <a href="http://planner.test/dashboard" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <span class="text-primary">
+                <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <defs>
+                    <path
+                      d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
+                      id="path-1"></path>
+                    <path
+                      d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.5364148,3.11535317 13.9273018,0.573395879 13.7918663,0.358365126 C13.5790555,0.511491653 10.8061687,2.3935607 5.47320593,6.00457225 Z"
+                      id="path-3"></path>
+                    <path
+                      d="M7.50063644,21.2294429 L12.3234468,23.3159332 C14.1688022,24.7579751 14.397098,26.4880487 13.008334,28.506154 C11.6195701,30.5242593 10.3099883,31.790241 9.07958868,32.3040991 C5.78142938,33.4346997 4.13234973,34 4.13234973,34 C4.13234973,34 2.75489982,33.0538207 2.37032616e-14,31.1614621 C-0.55822714,27.8186216 -0.55822714,26.0572515 -4.05231404e-15,25.8773518 C0.83734071,25.6075023 2.77988457,22.8248993 3.3049379,22.52991 C3.65497346,22.3332504 5.05353963,21.8997614 7.50063644,21.2294429 Z"
+                      id="path-4"></path>
+                    <path
+                      d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17 24,17 L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923 12.4,13.8 L17.4,7.13333333 C18.0627417,6.24967773 19.3163444,6.07059163 20.2,6.73333333 C20.3516113,6.84704183 20.4862915,6.981722 20.6,7.13333333 Z"
+                      id="path-5"></path>
+                  </defs>
+                  <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Brand-Logo" transform="translate(-27.000000, -15.000000)">
+                      <g id="Icon" transform="translate(27.000000, 15.000000)">
+                        <g id="Mask" transform="translate(0.000000, 8.000000)">
+                          <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                          </mask>
+                          <use fill="currentColor" xlink:href="#path-1"></use>
+                          <g id="Path-3" mask="url(#mask-2)">
+                            <use fill="currentColor" xlink:href="#path-3"></use>
+                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-3"></use>
+                          </g>
+                          <g id="Path-4" mask="url(#mask-2)">
+                            <use fill="currentColor" xlink:href="#path-4"></use>
+                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-4"></use>
+                          </g>
+                        </g>
+                        <g id="Triangle"
+                          transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) ">
+                          <use fill="currentColor" xlink:href="#path-5"></use>
+                          <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-5"></use>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+              </span>
+            </span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">Sneat</span>
+          </a>
+
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+            <i class="icon-base bx bx-chevron-left"></i>
+          </a>
+        </div>
+
+        <div class="menu-inner-shadow"></div>
+
+        <ul class="menu-inner py-1">
+          <li class="menu-item active">
+            <a href="./" class="menu-link">
+              <i class="menu-icon icon-base bx bx-calendar"></i>
+              <div data-i18n="Plans">Plans</div>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <div class="menu-mobile-toggler d-xl-none rounded-1">
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+          <i class="bx bx-menu icon-base"></i>
+          <i class="bx bx-chevron-right icon-base"></i>
+        </a>
+      </div>
+      <!-- / Menu -->
+
+      <!-- Layout container -->
+      <div class="layout-page">
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
+          id="layout-navbar">
+          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+            <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+              <i class="icon-base bx bx-menu icon-md"></i>
+            </a>
+          </div>
+
+          <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
+            <!-- Search -->
+            <div class="navbar-nav align-items-center">
+              <div class="nav-item navbar-search-wrapper mb-0">
+                <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+                  <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
+                </a>
+              </div>
+            </div>
+
+            <!-- /Search -->
+
+            <ul class="navbar-nav flex-row align-items-center ms-md-auto">
+              <!-- Style Switcher -->
+              <li class="nav-item dropdown me-2 me-xl-0">
+                <a class="nav-link dropdown-toggle hide-arrow" id="nav-theme" href="javascript:void(0);"
+                  data-bs-toggle="dropdown">
+                  <i class="icon-base bx bx-sun icon-md theme-icon-active"></i>
+                  <span class="d-none ms-2" id="nav-theme-text">Toggle theme</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-theme-text">
+                  <li>
+                    <button type="button" class="dropdown-item align-items-center active" data-bs-theme-value="light"
+                      aria-pressed="false">
+                      <span><i class="icon-base bx bx-sun icon-md me-3" data-icon="sun"></i>Light</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="dark"
+                      aria-pressed="true">
+                      <span><i class="icon-base bx bx-moon icon-md me-3" data-icon="moon"></i>Dark</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="system"
+                      aria-pressed="false">
+                      <span><i class="icon-base bx bx-desktop icon-md me-3" data-icon="desktop"></i>System</span>
+                    </button>
+                  </li>
+                </ul>
+              </li>
+              <!-- / Style Switcher-->
+
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <span class="avatar-initial rounded-circle bg-label-primary text-uppercase">TU</span>
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="pages-account-settings-account.html">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <span
+                              class="avatar-initial w-px-40 h-px-40 rounded-circle bg-label-primary text-uppercase">TU</span>
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <h6 class="mb-0">Test User</h6>
+                          <small class="text-body-secondary">Admin</small>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="javascript:void(0);" id="logoutBtn" class="dropdown-item">
+                      <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <!--/ User -->
+            </ul>
+          </div>
+        </nav>
+
+        <!-- / Navbar -->
+
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+          <!-- Content -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row mb-6">
+              <div class="col-6">
+                <h4 class="mb-0">Plan Details</h4>
+              </div>
+
+              <div class="col-6 text-end align-self-center">
+                <a href="./" type="button" class="rounded-4 btn btn-primary">
+                  <span class="icon-base bx bx-arrow-back icon-sm me-md-2"></span>
+                  <span class="d-none d-md-inline">Back</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="card rounded-5">
+              <div class="card-header">
+                <h5 class="card-title m-0">Plan Information</h5>
+              </div>
+
+              <div class="card-body p-3 p-md-6">
+                <div class="row g-4">
+                  <div class="col-md-4">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">Plan</span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="planTitle" class="mb-0 me-2">
+                                Mix Investment
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-detail icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">Start Date</span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="startDate" class="mb-0 me-2">
+                                01-May-2026
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-calendar-check icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">End Date</span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="endDate" class="mb-0 me-2">
+                                30-Jun-2026
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-calendar-x icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-header">
+                <h5 class="card-title m-0">Financial Details</h5>
+              </div>
+
+              <div class="card-body p-3 p-md-6">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body text-center p-3 p-md-6">
+                        <div class="d-flex justify-content-center mb-3">
+                          <div class="avatar avatar-md flex-shrink-0">
+                            <span class="avatar-initial avatar-shadow-primary rounded-circle">
+                              <i class="icon-base bx bx-wallet icon-26px"></i>
+                            </span>
+                          </div>
+                        </div>
+
+                        <h6 class="card-title fw-normal my-2">Investment</h6>
+
+                        <h4 id="invAmount" class="card-title mb-0">
+                          550,000
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body text-center p-3 p-md-6">
+                        <div class="d-flex justify-content-center mb-3">
+                          <div class="avatar avatar-md flex-shrink-0">
+                            <span class="avatar-initial avatar-shadow-primary rounded-circle">
+                              <i class="icon-base bx bx-trending-up icon-26px"></i>
+                            </span>
+                          </div>
+                        </div>
+
+                        <h6 class="card-title fw-normal my-2">
+                          Expected Return
+                        </h6>
+
+                        <h4 id="expectedReturnAmount" class="card-title mb-0">
+                          50,000
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body text-center p-3 p-md-6">
+                        <div class="d-flex justify-content-center mb-3">
+                          <div class="avatar avatar-md flex-shrink-0">
+                            <span class="avatar-initial avatar-shadow-primary rounded-circle">
+                              <i class="icon-base bx bx-coin-stack icon-26px"></i>
+                            </span>
+                          </div>
+                        </div>
+
+                        <h6 class="card-title fw-normal my-2">
+                          Daily Collection
+                        </h6>
+
+                        <h4 id="dailyAmount" class="card-title mb-0">
+                          8,000
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-header">
+                <h5 class="card-title m-0">Goal Overview</h5>
+              </div>
+
+              <div class="card-body p-3 p-md-6">
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">Remaining (Target: <span id="targetValue"></span>)</span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="targetProgress" class="mb-0 me-2">
+                                455,000
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-wallet icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">Collected Amount</span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="collectedAmount" class="mb-0 me-2">
+                                145,000
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-archive icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">Entries</span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="entriesCount" class="mb-0 me-2">15</h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-list-check icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    <div class="card border border border-light border-opacity-50 rounded-4">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">
+                              Average Per Day
+                            </span>
+
+                            <div class="d-flex align-items-center my-1">
+                              <h4 id="avgPerDay" class="mb-0 me-2">9667</h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-bar-chart-alt-2 icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row g-4 mt-3">
+                  <div class="col-12 col-md-6">
+                    <div class="card border border border-light border-opacity-50 rounded-4 h-100">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left">
+                            <span class="text-heading">Status</span>
+
+                            <div class="d-flex align-items-center my-3">
+                              <h4 class="mb-0 me-2">
+                                <span id="statusBadge" class="badge bg-label-success">Ahead</span>
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-pulse icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <div class="card border border border-light border-opacity-50 rounded-4 h-100">
+                      <div class="card-body p-3 p-md-6">
+                        <div class="d-flex align-items-start justify-content-between">
+                          <div class="content-left w-100 me-3">
+                            <span class="text-heading d-block mb-2">Projections</span>
+
+                            <div class="w-100" style="font-size: 0.85rem;">
+                              <div id="projectionByPace"
+                                class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom border-light border-opacity-50">
+                                <div class="text-body-secondary">
+                                  <strong class="text-heading me-1">By Pace:</strong>
+                                  <span class="proj-days fw-bold text-primary">-</span> days @ <span
+                                    class="proj-rate">-</span>/day
+                                </div>
+                                <span class="proj-date badge bg-label-primary px-2 py-1 font-monospace">-</span>
+                              </div>
+
+                              <div id="projectionByDate" class="d-flex align-items-center justify-content-between">
+                                <div class="text-body-secondary">
+                                  <strong class="text-heading me-1">By Date:</strong>
+                                  <span class="proj-days fw-bold text-info">-</span> days @ <span
+                                    class="proj-rate">-</span>/day
+                                </div>
+                                <span class="proj-date badge bg-label-info px-2 py-1 font-monospace">-</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                              <i class="icon-base bx bx-target-lock icon-lg"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-header">
+                <div class="row align-items-center">
+                  <div class="col-6">
+                    <h5 class="card-title m-0">Entries</h5>
+                  </div>
+
+                  <div class="col-6 text-end">
+                    <button type="button" class="rounded-4 btn btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#addEntryModal" data-entry-action="add">
+                      <span class="icon-base bx bx-plus icon-sm me-md-2"></span>
+                      <span class="d-none d-md-inline">Entry</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body p-3 p-md-6">
+                <div class="card border border border-light border-opacity-50 rounded-5">
+                  <div class="card-body p-3 p-md-6">
+                    <div class="text-end mb-4">
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary rounded-4" id="gridViewBtn">
+                          <span class="icon-base bx bx-grid-alt icon-sm"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-outline-primary active rounded-4" id="tableViewBtn">
+                          <span class="icon-base bx bx-table icon-sm"></span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div id="gridView">
+                      <div class="row g-4"></div>
+                    </div>
+
+                    <div id="tableView" class="d-none">
+                      <div class="table-responsive text-nowrap">
+                        <table class="table table-hover table-bordered table-sm m-0">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Date</th>
+                              <th>Amount</th>
+                              <th>Opening Balance</th>
+                              <th>Closing Balance</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+
+                              <td>15-May-2026</td>
+
+                              <td>11,000</td>
+
+                              <td>134,000</td>
+
+                              <td>145,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/15/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+
+                              <td>14-May-2026</td>
+
+                              <td>9,000</td>
+
+                              <td>125,000</td>
+
+                              <td>134,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/14/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>3</td>
+
+                              <td>13-May-2026</td>
+
+                              <td>10,000</td>
+
+                              <td>115,000</td>
+
+                              <td>125,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/13/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>4</td>
+
+                              <td>12-May-2026</td>
+
+                              <td>10,000</td>
+
+                              <td>105,000</td>
+
+                              <td>115,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/12/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>5</td>
+
+                              <td>11-May-2026</td>
+
+                              <td>10,000</td>
+
+                              <td>95,000</td>
+
+                              <td>105,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/11/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>6</td>
+
+                              <td>10-May-2026</td>
+
+                              <td>10,000</td>
+
+                              <td>85,000</td>
+
+                              <td>95,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/10/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>7</td>
+
+                              <td>09-May-2026</td>
+
+                              <td>10,000</td>
+
+                              <td>75,000</td>
+
+                              <td>85,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/9/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>8</td>
+
+                              <td>08-May-2026</td>
+
+                              <td>9,000</td>
+
+                              <td>66,000</td>
+
+                              <td>75,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/8/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>9</td>
+
+                              <td>07-May-2026</td>
+
+                              <td>9,000</td>
+
+                              <td>57,000</td>
+
+                              <td>66,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/7/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>10</td>
+
+                              <td>06-May-2026</td>
+
+                              <td>7,000</td>
+
+                              <td>50,000</td>
+
+                              <td>57,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/6/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>11</td>
+
+                              <td>05-May-2026</td>
+
+                              <td>9,000</td>
+
+                              <td>41,000</td>
+
+                              <td>50,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/5/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>12</td>
+
+                              <td>04-May-2026</td>
+
+                              <td>11,000</td>
+
+                              <td>30,000</td>
+
+                              <td>41,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/4/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>13</td>
+
+                              <td>03-May-2026</td>
+
+                              <td>9,000</td>
+
+                              <td>21,000</td>
+
+                              <td>30,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/3/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>14</td>
+
+                              <td>02-May-2026</td>
+
+                              <td>11,000</td>
+
+                              <td>10,000</td>
+
+                              <td>21,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/2/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>15</td>
+
+                              <td>01-May-2026</td>
+
+                              <td>10,000</td>
+
+                              <td>0</td>
+
+                              <td>10,000</td>
+
+                              <td>
+                                <a href="http://planner.test/entry/1/edit"
+                                  class="rounded-4 btn btn-sm btn-label-primary">
+                                  <i class="bx bx-edit-alt me-md-1"></i>
+
+                                  <span class="d-none d-md-inline">
+                                    Edit
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- / Content -->
+
+          <!-- Footer -->
+          <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl">
+              <div
+                class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  , made with ❤️ by
+                  <a href="#" target="_blank" class="footer-link">Awais Younis</a>
+                </div>
+              </div>
+            </div>
+          </footer>
+          <!-- / Footer -->
+
+          <div class="content-backdrop fade"></div>
+        </div>
+        <!-- Content wrapper -->
+      </div>
+      <!-- / Layout page -->
+    </div>
+
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
+  </div>
+  <!-- / Layout wrapper -->
+
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/theme.js  -->
+
+  <script src="./assets/vendor/libs/jquery/jquery.js"></script>
+
+  <script src="./assets/vendor/libs/popper/popper.js"></script>
+  <script src="./assets/vendor/js/bootstrap.js"></script>
+  <script src="./assets/vendor/libs/@algolia/autocomplete-js.js"></script>
+
+  <script src="./assets/vendor/libs/pickr/pickr.js"></script>
+
+  <script src="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+  <script src="./assets/vendor/libs/hammer/hammer.js"></script>
+
+  <script src="./assets/vendor/js/menu.js"></script>
+
+  <!-- endbuild -->
+
+  <!-- Vendors JS -->
+
+  <!-- Main JS -->
+
+  <script src="./assets/js/main.js"></script>
+
+  <!-- Page JS -->
+  <!-- Add Entry Modal -->
+  <div class="modal fade" id="addEntryModal" tabindex="-1" aria-labelledby="addEntryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addEntryModalLabel">Add Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addEntryForm" action="#supabaseCreateEntryAPI" method="POST">
+            <input type="hidden" id="entryMode" name="entryMode" value="add" />
+            <input type="hidden" id="entryId" name="entryId" value="" />
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="amount" class="form-label">Amount</label>
+                  <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter entry amount"
+                    value="" min="0" step="0.01" required />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="date" class="form-label">Date</label>
+                  <input type="date" class="form-control" id="date" name="date" value="" required />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary" form="addEntryForm">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteEntryModal" tabindex="-1" aria-labelledby="deleteEntryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteEntryModalLabel">Delete Entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0" id="deleteEntryModalMessage">
+            Are you sure you want to delete this entry?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteEntryButton">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+
+<script>
+  function updatePerPage(value) {
+    const url = new URL(window.location);
+
+    url.searchParams.set("per_page", value);
+    url.searchParams.set("page", "1");
+
+    window.location.href = url.toString();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const gridBtn = document.getElementById("gridViewBtn");
+    const tableBtn = document.getElementById("tableViewBtn");
+
+    const gridView = document.getElementById("gridView");
+    const tableView = document.getElementById("tableView");
+
+    const savedView = localStorage.getItem("entriesView") || "grid";
+
+    setView(savedView);
+
+    gridBtn.addEventListener("click", function () {
+      setView("grid");
+    });
+
+    tableBtn.addEventListener("click", function () {
+      setView("table");
+    });
+
+    function setView(view) {
+      if (view === "table") {
+        gridView.classList.add("d-none");
+        tableView.classList.remove("d-none");
+
+        tableBtn.classList.add("active");
+        gridBtn.classList.remove("active");
+      } else {
+        tableView.classList.add("d-none");
+        gridView.classList.remove("d-none");
+
+        gridBtn.classList.add("active");
+        tableBtn.classList.remove("active");
+      }
+
+      localStorage.setItem("entriesView", view);
+    }
+
+    // Logout button handler
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        try {
+          const cfg = window.__SUPABASE_CONFIG || {};
+          const supabase = window.supabase.createClient(cfg.url, cfg.key);
+          await supabase.auth.signOut();
+          window.location.href = "./login.html";
+        } catch (err) {
+          console.error("Sign out failed:", err);
+        }
+      });
+    }
+  });
+</script>
+
+<!-- Page script: load plan details -->
+<script>
+  (function () {
+    function formatDateDMY(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      if (isNaN(d)) return "";
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const day = String(d.getDate()).padStart(2, "0");
+      const mon = months[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day}-${mon}-${year}`;
+    }
+
+    function formatNumber(v) {
+      if (v === null || v === undefined) return "";
+      return Number(v).toLocaleString();
+    }
+
+    function formatDateInputValue(date) {
+      const offset = date.getTimezoneOffset() * 60000;
+      return new Date(date.getTime() - offset).toISOString().slice(0, 10);
+    }
+
+    function getModalInstance(modalId) {
+      const modalEl = document.getElementById(modalId);
+      if (!modalEl || !window.bootstrap || !bootstrap.Modal) return null;
+      return bootstrap.Modal.getOrCreateInstance(modalEl);
+    }
+
+    function resetEntryModal() {
+      const form = document.getElementById("addEntryForm");
+      const title = document.getElementById("addEntryModalLabel");
+      const saveButton = document.querySelector('[form="addEntryForm"]');
+      const modeInput = document.getElementById("entryMode");
+      const idInput = document.getElementById("entryId");
+      const dateEl = document.getElementById("date");
+
+      if (form) form.reset();
+      if (title) title.textContent = "Add Entry";
+      if (saveButton) saveButton.textContent = "Save";
+      if (modeInput) modeInput.value = "add";
+      if (idInput) idInput.value = "";
+      if (dateEl) dateEl.value = formatDateInputValue(new Date());
+    }
+
+    function openEntryModal(entry) {
+      const title = document.getElementById("addEntryModalLabel");
+      const saveButton = document.querySelector('[form="addEntryForm"]');
+      const modeInput = document.getElementById("entryMode");
+      const idInput = document.getElementById("entryId");
+      const amountEl = document.getElementById("amount");
+      const dateEl = document.getElementById("date");
+
+      if (title) title.textContent = "Edit Entry";
+      if (saveButton) saveButton.textContent = "Update";
+      if (modeInput) modeInput.value = "edit";
+      if (idInput) idInput.value = String(entry.id || "");
+      if (amountEl) amountEl.value = entry.amount ?? "";
+      if (dateEl) {
+        const value = entry.date || "";
+        dateEl.value = /^\d{4}-\d{2}-\d{2}$/.test(value)
+          ? value
+          : value
+            ? formatDateInputValue(new Date(value))
+            : "";
+      }
+
+      const modal = getModalInstance("addEntryModal");
+      if (modal) modal.show();
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    async function getSupabaseClient() {
+      if (window.__supabase_client) return window.__supabase_client;
+      const cfg = window.__SUPABASE_CONFIG || {};
+      if (
+        window.supabase &&
+        typeof window.supabase.createClient === "function"
+      ) {
+        window.__supabase_client = window.supabase.createClient(
+          cfg.url,
+          cfg.key,
+        );
+        return window.__supabase_client;
+      }
+      await new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src =
+          "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/umd/supabase.min.js";
+        s.onload = resolve;
+        s.onerror = () => reject(new Error("Failed to load Supabase SDK"));
+        document.head.appendChild(s);
+      });
+      if (
+        window.supabase &&
+        typeof window.supabase.createClient === "function"
+      ) {
+        window.__supabase_client = window.supabase.createClient(
+          cfg.url,
+          cfg.key,
+        );
+        return window.__supabase_client;
+      }
+      throw new Error("Supabase SDK not available");
+    }
+
+    function showAlert(type, message) {
+      const container = document.querySelector(".container-xxl.flex-grow-1");
+      if (!container) return;
+      const div = document.createElement("div");
+      div.className = `alert alert-${type} alert-dismissible`;
+      div.role = "alert";
+      div.innerHTML = `${escapeHtml(message)}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+      container.prepend(div);
+    }
+
+    function renderEntriesGrid(entries) {
+      const gridRow = document.querySelector("#gridView .row");
+      if (!gridRow) return;
+      if (!entries || entries.length === 0) {
+        gridRow.innerHTML =
+          '<div class="col-12 alert alert-info m-0">No entries found.</div>';
+        return;
+      }
+
+      gridRow.innerHTML = entries
+        .map((e, idx) => {
+          const rawDate = e.date || e.created_at;
+
+          const date = rawDate ? formatDateDMY(rawDate) : "-";
+
+          const weekday = rawDate
+            ? new Date(rawDate).toLocaleDateString("en-US", {
+              weekday: "long",
+            })
+            : "-";
+
+          const amount = formatNumber(Number(e.amount || 0));
+          const opening = formatNumber(Number(e.opening || 0));
+          const closing = formatNumber(Number(e.closing || 0));
+
+          const isOpen = Number(e.amount) === 0;
+
+          const lockedString = isOpen ? "Open" : "Locked";
+          const lockedIcon = isOpen ? "bx-lock-open" : "bx-lock";
+          const lockedClass = isOpen
+            ? "bg-label-success"
+            : "bg-label-secondary";
+
+          const deleteButton = isOpen
+            ? `
+				<button type="button"
+					class="btn btn-label-danger rounded-4 entry-delete-btn"
+					data-entry-id="${escapeHtml(e.id)}"
+					data-entry-date="${escapeHtml(rawDate || "")}" 
+					data-entry-amount="${escapeHtml(e.amount ?? "")}"
+					>
+					<span class="icon-base bx bx-trash icon-sm me-md-2"></span> Delete
+				</button>
+			`
+            : "";
+
+          return `
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="card border border-light border-opacity-50 shadow-sm rounded-5 h-100">
+          <div class="card-body d-flex flex-column p-3 p-md-4">
+
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h6 class="mb-0 text-body">${date}</h6>
+                <small class="text-muted">${weekday}</small>
+              </div>
+
+              <div class="d-inline-flex align-items-center gap-1">
+                <span class="badge rounded-pill bg-primary px-3 py-2">
+                  ${idx + 1}
+                </span>
+
+                <span class="badge ${lockedClass} rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
+                  <i class="bx ${lockedIcon}" aria-hidden="true"></i>
+                  <span class="lh-1">${lockedString}</span>
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-2" />
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Amount</small>
+              <h3 class="mb-0 text-primary">${amount}</h3>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100">
+                  <small class="text-muted d-block mb-1">Opening</small>
+                  <h6 class="mb-0 text-body">${opening}</h6>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100">
+                  <small class="text-muted d-block mb-1">Closing</small>
+                  <h6 class="mb-0 text-body">${closing}</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-auto d-grid gap-2">
+              <button
+                 type="button"
+                 class="btn btn-primary rounded-4 entry-edit-btn"
+                 data-entry-id="${escapeHtml(e.id)}"
+                 data-entry-date="${escapeHtml(rawDate || "")}" 
+                 data-entry-amount="${escapeHtml(e.amount ?? "")}">
+                <span class="icon-base bx bx-edit-alt icon-sm me-md-2"></span>
+                Edit
+              </button>
+
+              ${deleteButton}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+        })
+        .join("");
+    }
+
+    function renderEntriesTable(entries) {
+      const tbody = document.querySelector("#tableView table tbody");
+      if (!tbody) return;
+      if (!entries || entries.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="6" class="text-center">No entries found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = entries
+        .map((e, i) => {
+          const date = formatDateDMY(e.date || e.created_at || "");
+          const amount = formatNumber(e.amount || 0);
+          const opening = formatNumber(e.opening || "");
+          const closing = formatNumber(e.closing || "");
+          return `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${date}</td>
+            <td>${amount}</td>
+            <td>${opening}</td>
+            <td>${closing}</td>
+            <td>
+              <button type="button" class="rounded-4 btn btn-sm btn-label-primary entry-edit-btn" data-entry-id="${escapeHtml(e.id)}" data-entry-date="${escapeHtml(e.date || e.created_at || "")}" data-entry-amount="${escapeHtml(e.amount ?? "")}"><i class="bx bx-edit-alt me-md-1"></i><span class="d-none d-md-inline">Edit</span></button>
+              ${Number(e.amount) === 0
+              ? `
+              <button type="button" class="rounded-4 btn btn-sm btn-label-danger entry-delete-btn ms-2" data-entry-id="${escapeHtml(e.id)}" data-entry-date="${escapeHtml(e.date || e.created_at || "")}" data-entry-amount="${escapeHtml(e.amount ?? "")}"><i class="bx bx-trash me-md-1"></i><span class="d-none d-md-inline">Delete</span></button>
+              `
+              : ""
+            }
+            </td>
+          </tr>`;
+        })
+        .join("");
+    }
+
+    async function loadPlan() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if (!id) {
+        showAlert("warning", "No plan id provided in URL.");
+        return;
+      }
+
+      let supa;
+      try {
+        supa = await getSupabaseClient();
+      } catch (err) {
+        console.error(err);
+        showAlert("danger", "Failed to load Supabase SDK.");
+        return;
+      }
+
+      try {
+        const { data: plan, error: planErr } = await supa
+          .from("plans")
+          .select("*")
+          .eq("id", id)
+          .single();
+        if (planErr) throw planErr;
+        if (!plan) {
+          showAlert("warning", "Plan not found.");
+          return;
+        }
+
+        // populate fields
+        const titleEl = document.getElementById("planTitle");
+        const startEl = document.getElementById("startDate");
+        const endEl = document.getElementById("endDate");
+        const invEl = document.getElementById("invAmount");
+        const expectedEl = document.getElementById("expectedReturnAmount");
+        const dailyEl = document.getElementById("dailyAmount");
+        const targetVal = document.getElementById("targetValue");
+        const targetProg = document.getElementById("targetProgress");
+        const collectedEl = document.getElementById("collectedAmount");
+        const entriesEl = document.getElementById("entriesCount");
+        const avgEl = document.getElementById("avgPerDay");
+        const statusBadge = document.getElementById("statusBadge");
+
+        if (titleEl) titleEl.textContent = plan.title || "";
+        if (startEl) startEl.textContent = formatDateDMY(plan.start_date);
+        if (endEl) endEl.textContent = formatDateDMY(plan.end_date);
+        if (invEl) invEl.textContent = formatNumber(plan.investment);
+        if (expectedEl)
+          expectedEl.textContent = formatNumber(plan.expected_return);
+        if (dailyEl)
+          dailyEl.textContent = formatNumber(plan.daily_collection_amount);
+        const calculatedTarget = Number(plan.investment || 0) + Number(plan.expected_return || 0);
+        if (targetVal) targetVal.textContent = formatNumber(calculatedTarget);
+        if (targetProg)
+          targetProg.textContent = formatNumber(calculatedTarget);
+
+        // fetch entries to compute collected, count and avg
+        try {
+          const { data: rawEntries, error: entriesErr } = await supa
+            .from("entries")
+            .select("*")
+            .eq("plan_id", id)
+            .order("date", { ascending: false });
+          if (entriesErr) throw entriesErr;
+
+          const entries = rawEntries || [];
+
+          // Sort historically (oldest first) to calculate dynamic opening and closing balances
+          const sorted = [...entries].sort((a, b) => new Date(a.date || a.created_at) - new Date(b.date || b.created_at));
+          let currentBalance = 0;
+          const balancesMap = {};
+          sorted.forEach((e) => {
+            const amount = Number(e.amount || 0);
+            const op = currentBalance;
+            const cl = currentBalance + amount;
+            balancesMap[e.id] = { opening: op, closing: cl };
+            currentBalance = cl;
+          });
+
+          // Assign dynamically calculated balances to the entries
+          entries.forEach((e) => {
+            e.opening = balancesMap[e.id]?.opening ?? 0;
+            e.closing = balancesMap[e.id]?.closing ?? 0;
+          });
+          const collected = (entries || []).reduce(
+            (s, e) => s + (Number(e.amount) || 0),
+            0,
+          );
+          const count = (entries || []).length;
+          const progress = calculatedTarget - collected;
+          const avgPerDay = count > 0 ? Math.round(collected / count) : 0;
+
+          if (targetProg) targetProg.textContent = formatNumber(progress);
+          if (collectedEl) collectedEl.textContent = formatNumber(collected);
+          if (entriesEl) entriesEl.textContent = count;
+          if (avgEl) avgEl.textContent = formatNumber(avgPerDay);
+
+          // Calculate Projection by Pace
+          const dailyRate = Number(plan.daily_collection_amount || 0);
+          const paceDays = (progress > 0 && dailyRate > 0) ? Math.ceil(progress / dailyRate) : 0;
+          const today = new Date();
+          const paceDate = new Date(today.getTime() + (paceDays * 24 * 60 * 60 * 1000));
+          const formattedPaceDate = paceDays > 0 ? formatDateDMY(paceDate) : "Completed";
+
+          const paceDaysEl = document.querySelector("#projectionByPace .proj-days");
+          const paceRateEl = document.querySelector("#projectionByPace .proj-rate");
+          const paceDateEl = document.querySelector("#projectionByPace .proj-date");
+          if (paceDaysEl) paceDaysEl.textContent = formatNumber(paceDays);
+          if (paceRateEl) paceRateEl.textContent = formatNumber(dailyRate);
+          if (paceDateEl) paceDateEl.textContent = formattedPaceDate;
+
+          // Calculate Projection by Date
+          const endDate = plan.end_date ? new Date(plan.end_date) : null;
+          let dateDays = 0;
+          let requiredRate = 0;
+          let formattedDateDate = "-";
+
+          if (endDate) {
+            const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const endMidnight = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+            const msDiff = endMidnight.getTime() - todayMidnight.getTime();
+            dateDays = Math.max(0, Math.ceil(msDiff / (24 * 60 * 60 * 1000)));
+
+            if (progress > 0 && dateDays > 0) {
+              requiredRate = Math.round(progress / dateDays);
+            }
+            formattedDateDate = formatDateDMY(endDate);
+          }
+
+          const dateDaysEl = document.querySelector("#projectionByDate .proj-days");
+          const dateRateEl = document.querySelector("#projectionByDate .proj-rate");
+          const dateDateEl = document.querySelector("#projectionByDate .proj-date");
+          if (dateDaysEl) dateDaysEl.textContent = formatNumber(dateDays);
+          if (dateRateEl) dateRateEl.textContent = formatNumber(requiredRate);
+          if (dateDateEl) dateDateEl.textContent = formattedDateDate;
+
+          // show/hide pagination and view controls when no entries
+          const perPage = document.getElementById("perPageSelect");
+          const gridBtnControl = document.getElementById("gridViewBtn");
+          const tableBtnControl = document.getElementById("tableViewBtn");
+          if (count === 0) {
+            if (perPage) perPage.style.display = "none";
+            if (gridBtnControl) gridBtnControl.style.display = "none";
+            if (tableBtnControl) tableBtnControl.style.display = "none";
+          } else {
+            if (perPage) perPage.style.display = "";
+            if (gridBtnControl) gridBtnControl.style.display = "";
+            if (tableBtnControl) tableBtnControl.style.display = "";
+          }
+
+          // render entries into grid and table (replace static samples)
+          renderEntriesGrid(entries || []);
+          renderEntriesTable(entries || []);
+
+          // Calculate Status Dynamically
+          let statusText = "On Track";
+          let statusClass = "badge bg-label-primary";
+
+          if (progress <= 0) {
+            statusText = "Advance Track";
+            statusClass = "badge bg-label-success";
+          } else if (dateDays > 0 && avgPerDay >= requiredRate) {
+            statusText = "Advance Track";
+            statusClass = "badge bg-label-success";
+          } else if (avgPerDay < dailyRate) {
+            statusText = "Behind Schedule";
+            statusClass = "badge bg-label-danger";
+          } else if (avgPerDay > dailyRate) {
+            statusText = "Ahead";
+            statusClass = "badge bg-label-info";
+          } else if (avgPerDay === dailyRate) {
+            statusText = "On Track";
+            statusClass = "badge bg-label-primary";
+          }
+
+          if (statusBadge) {
+            statusBadge.textContent = statusText;
+            statusBadge.className = statusClass;
+          }
+        } catch (err) {
+          console.error("Failed to load entries", err);
+          // hide controls and render empty
+          const perPage = document.getElementById("perPageSelect");
+          const gridBtnControl = document.getElementById("gridViewBtn");
+          const tableBtnControl = document.getElementById("tableViewBtn");
+          if (perPage) perPage.style.display = "none";
+          if (gridBtnControl) gridBtnControl.style.display = "none";
+          if (tableBtnControl) tableBtnControl.style.display = "none";
+
+          renderEntriesGrid([]);
+          renderEntriesTable([]);
+        }
+
+        // status handled dynamically inside entries calculation above
+      } catch (err) {
+        console.error("Failed to load plan", err);
+        showAlert(
+          "danger",
+          "Failed to load plan: " + (err.message || JSON.stringify(err)),
+        );
+      }
+    }
+
+    // Add Entry form handler
+    document.addEventListener("DOMContentLoaded", function () {
+      const addEntryModal = document.getElementById("addEntryModal");
+      if (addEntryModal) {
+        addEntryModal.addEventListener("show.bs.modal", function (event) {
+          const modeInput = document.getElementById("entryMode");
+          const trigger = event.relatedTarget;
+
+          if (trigger && trigger.dataset.entryAction === "add") {
+            resetEntryModal();
+            return;
+          }
+
+          if (!modeInput || modeInput.value !== "edit") {
+            resetEntryModal();
+          }
+        });
+      }
+
+      document.addEventListener("click", function (event) {
+        const editButton = event.target.closest(".entry-edit-btn");
+        if (!editButton) return;
+
+        openEntryModal({
+          id: editButton.dataset.entryId,
+          date: editButton.dataset.entryDate,
+          amount: editButton.dataset.entryAmount,
+        });
+      });
+
+      document.addEventListener("click", function (event) {
+        const deleteButton = event.target.closest(".entry-delete-btn");
+        if (!deleteButton) return;
+
+        const modalMessage = document.getElementById("deleteEntryModalMessage");
+        const confirmButton = document.getElementById(
+          "confirmDeleteEntryButton",
+        );
+        const entryDate = deleteButton.dataset.entryDate || "";
+
+        if (modalMessage) {
+          modalMessage.textContent = entryDate
+            ? `Delete entry dated ${formatDateDMY(entryDate)}? This cannot be undone.`
+            : "Delete this entry? This cannot be undone.";
+        }
+
+        if (confirmButton) {
+          confirmButton.dataset.entryId = deleteButton.dataset.entryId || "";
+        }
+
+        const modal = getModalInstance("deleteEntryModal");
+        if (modal) modal.show();
+      });
+
+      const confirmDeleteButton = document.getElementById(
+        "confirmDeleteEntryButton",
+      );
+      if (confirmDeleteButton) {
+        confirmDeleteButton.addEventListener("click", async function () {
+          const entryId = confirmDeleteButton.dataset.entryId;
+          if (!entryId) {
+            showAlert("warning", "No entry selected for deletion.");
+            return;
+          }
+
+          let supa;
+          try {
+            supa = await getSupabaseClient();
+          } catch (err) {
+            console.error(err);
+            showAlert("danger", "Failed to load Supabase SDK.");
+            return;
+          }
+
+          try {
+            const { data: sessionData } = await supa.auth.getSession();
+            const session = sessionData?.session || null;
+            if (!session) {
+              showAlert("warning", "You must be logged in to delete entries.");
+              return;
+            }
+
+            const { error } = await supa
+              .from("entries")
+              .delete()
+              .eq("id", entryId);
+            if (error) throw error;
+
+            const modal = getModalInstance("deleteEntryModal");
+            if (modal) modal.hide();
+            showAlert("success", "Entry deleted successfully.");
+            await loadPlan();
+          } catch (err) {
+            console.error("Failed to delete entry", err);
+            showAlert(
+              "danger",
+              "Failed to delete entry: " + (err.message || JSON.stringify(err)),
+            );
+          }
+        });
+      }
+
+      const form = document.getElementById("addEntryForm");
+      if (form) {
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const params = new URLSearchParams(window.location.search);
+          const id = params.get("id");
+          if (!id) {
+            showAlert("warning", "No plan id provided.");
+            return;
+          }
+
+          const modeInput = document.getElementById("entryMode");
+          const entryIdInput = document.getElementById("entryId");
+          const entryMode = modeInput ? modeInput.value : "add";
+          const entryId = entryIdInput ? entryIdInput.value : "";
+
+          const amountEl = document.getElementById("amount");
+          const dateEl = document.getElementById("date");
+          const amount = parseFloat(
+            amountEl && amountEl.value ? amountEl.value : NaN,
+          );
+          const date = dateEl && dateEl.value ? dateEl.value : "";
+
+          if (isNaN(amount) || !date) {
+            showAlert("warning", "Please enter a valid amount and date.");
+            return;
+          }
+
+          let supa;
+          try {
+            supa = await getSupabaseClient();
+          } catch (err) {
+            console.error(err);
+            showAlert("danger", "Failed to load Supabase SDK.");
+            return;
+          }
+
+          // require authenticated user for inserts and capture user id
+          let session = null;
+          try {
+            const sess = await supa.auth.getSession();
+            session = sess?.data?.session || sess?.session || null;
+            if (!session) {
+              showAlert("warning", "You must be logged in to add entries.");
+              return;
+            }
+          } catch (err) {
+            // ignore and continue if getSession shape differs
+          }
+
+          try {
+            const payload = {
+              amount: String(amount),
+              date: date,
+            };
+            const query =
+              entryMode === "edit" && entryId
+                ? supa.from("entries").update(payload).eq("id", entryId)
+                : supa
+                  .from("entries")
+                  .insert([{ ...payload, plan_id: Number(id) }]);
+
+            const { data, error, status } = await query.select();
+            if (error) {
+              console.error("Supabase entry save error", { status, error });
+              const errMsg =
+                error?.message || error?.details || JSON.stringify(error);
+              showAlert(
+                "danger",
+                entryMode === "edit"
+                  ? "Failed to update entry: " + errMsg
+                  : "Failed to add entry: " + errMsg,
+              );
+              return;
+            }
+
+            console.info("Entry save success", data);
+            showAlert(
+              "success",
+              entryMode === "edit"
+                ? "Entry updated successfully."
+                : "Entry added successfully.",
+            );
+
+            // close modal
+            const modalEl = document.getElementById("addEntryModal");
+            if (modalEl) {
+              const modal =
+                bootstrap.Modal.getInstance(modalEl) ||
+                bootstrap.Modal.getOrCreateInstance(modalEl);
+              modal.hide();
+            }
+
+            form.reset();
+            resetEntryModal();
+
+            // refresh entries
+            await loadPlan();
+          } catch (err) {
+            console.error(
+              "Failed to save entry (exception)",
+              err,
+              typeof err === "object"
+                ? JSON.stringify(err, Object.getOwnPropertyNames(err), 2)
+                : err,
+            );
+            const msg =
+              err && (err.message || err.error || err.msg)
+                ? err.message || err.error || err.msg
+                : JSON.stringify(err);
+            showAlert(
+              "danger",
+              entryMode === "edit"
+                ? "Failed to update entry: " + msg
+                : "Failed to add entry: " + msg,
+            );
+          }
+        });
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", loadPlan);
+  })();
+</script>
