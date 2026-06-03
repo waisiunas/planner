@@ -1728,7 +1728,7 @@
               Close
             </button>
             <button type="submit" class="btn btn-primary" form="addProductForm">
-              Save Product
+              Save
             </button>
           </div>
         </div>
@@ -1896,7 +1896,7 @@
 
       if (form) form.reset();
       if (title) title.textContent = "Add Investment Product";
-      if (saveButton) saveButton.textContent = "Save Product";
+      if (saveButton) saveButton.textContent = "Save";
       if (modeInput) modeInput.value = "add";
       if (idInput) idInput.value = "";
     }
@@ -1912,7 +1912,7 @@
       const sellingEl = document.getElementById("productSellingRate");
 
       if (title) title.textContent = "Edit Investment Product";
-      if (saveButton) saveButton.textContent = "Update Product";
+      if (saveButton) saveButton.textContent = "Update";
       if (modeInput) modeInput.value = "edit";
       if (idInput) idInput.value = String(product.id || "");
       if (nameEl) nameEl.value = product.product || "";
