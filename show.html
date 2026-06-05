@@ -241,7 +241,7 @@
           <!-- Navbar -->
 
           <nav
-            class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
+            class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme rounded-5"
             id="layout-navbar"
           >
             <div
@@ -259,22 +259,6 @@
               class="navbar-nav-right d-flex align-items-center justify-content-end"
               id="navbar-collapse"
             >
-              <!-- Search -->
-              <div class="navbar-nav align-items-center">
-                <div class="nav-item navbar-search-wrapper mb-0">
-                  <a
-                    class="nav-item nav-link search-toggler px-0"
-                    href="javascript:void(0);"
-                  >
-                    <span
-                      class="d-inline-block text-body-secondary fw-normal"
-                      id="autocomplete"
-                    ></span>
-                  </a>
-                </div>
-              </div>
-
-              <!-- /Search -->
 
               <ul class="navbar-nav flex-row align-items-center ms-md-auto">
                 <!-- Style Switcher -->
@@ -844,7 +828,7 @@
                                 <div
                                   class="d-flex align-items-start justify-content-between"
                                 >
-                                  <div class="content-left w-100 me-3">
+                                  <div class="content-left w-100">
                                     <span class="text-heading d-block mb-2"
                                       >Projections</span
                                     >
@@ -975,8 +959,8 @@
                                       <th>#</th>
                                       <th>Date</th>
                                       <th>Amount</th>
-                                      <th>Opening Balance</th>
-                                      <th>Closing Balance</th>
+                                      <th>Collected</th>
+                                      <th>Remaining</th>
                                       <th>Action</th>
                                     </tr>
                                   </thead>
@@ -1999,8 +1983,8 @@
             : "-";
 
           const amount = formatNumber(Number(e.amount || 0));
-          const opening = formatNumber(Number(e.opening || 0));
-          const closing = formatNumber(Number(e.closing || 0));
+          const collected = formatNumber(Number(e.collected || 0));
+          const remaining = formatNumber(Number(e.remaining || 0));
 
           const isOpen = Number(e.amount) === 0;
 
@@ -2046,25 +2030,23 @@
 							</div>
 						</div>
 
-						<hr class="my-2" />
-
-						<div class="mb-3">
-							<small class="text-muted d-block mb-1">Amount</small>
+						<div class="mb-3 bg-primary bg-opacity-10 rounded-4 border border-primary border-opacity-10 p-2 text-center">
+							<small class="text-muted text-primary d-block mb-1">Amount</small>
 							<h3 class="mb-0 text-primary">${amount}</h3>
 						</div>
 
 						<div class="row g-2 mb-3">
 							<div class="col-6">
-								<div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100">
-									<small class="text-muted d-block mb-1">Opening</small>
-									<h6 class="mb-0 text-body">${opening}</h6>
+								<div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
+                                    <small class="text-muted d-block mb-1">Collected</small>
+                                    <h6 class="mb-0 text-body">${collected}</h6>
 								</div>
 							</div>
 
 							<div class="col-6">
-								<div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100">
-									<small class="text-muted d-block mb-1">Closing</small>
-									<h6 class="mb-0 text-body">${closing}</h6>
+								<div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
+                                    <small class="text-muted d-block mb-1">Remaining</small>
+                                    <h6 class="mb-0 text-body">${remaining}</h6>
 								</div>
 							</div>
 						</div>
@@ -2104,15 +2086,15 @@
         .map((e, i) => {
           const date = formatDateDMY(e.date || e.created_at || "");
           const amount = formatNumber(e.amount || 0);
-          const opening = formatNumber(e.opening || "");
-          const closing = formatNumber(e.closing || "");
+          const collected = formatNumber(e.collected || "");
+          const remaining = formatNumber(e.remaining || "");
           return `
 					<tr>
 						<td>${i + 1}</td>
 						<td>${date}</td>
 						<td>${amount}</td>
-						<td>${opening}</td>
-						<td>${closing}</td>
+                        <td>${collected}</td>
+                        <td>${remaining}</td>
 						<td>
 							<button type="button" class="rounded-4 btn btn-sm btn-label-primary entry-edit-btn" data-entry-id="${escapeHtml(e.id)}" data-entry-date="${escapeHtml(e.date || e.created_at || "")}" data-entry-amount="${escapeHtml(e.amount ?? "")}"><i class="bx bx-edit-alt me-md-1"></i><span class="d-none d-md-inline">Edit</span></button>
 							${
@@ -2362,6 +2344,10 @@
           entries.forEach((e) => {
             e.opening = balancesMap[e.id]?.opening ?? 0;
             e.closing = balancesMap[e.id]?.closing ?? 0;
+            // `collected` = cumulative collected up to and including this entry
+            e.collected = balancesMap[e.id]?.closing ?? 0;
+            // `remaining` = target left after this entry
+            e.remaining = calculatedTarget - (e.collected || 0);
           });
           const collected = (entries || []).reduce(
             (s, e) => s + (Number(e.amount) || 0),
@@ -2381,6 +2367,7 @@
           const paceDays =
             progress > 0 && dailyRate > 0 ? Math.ceil(progress / dailyRate) : 0;
           const today = new Date();
+
           const paceDate = new Date(
             today.getTime() + paceDays * 24 * 60 * 60 * 1000,
           );
@@ -2405,23 +2392,53 @@
           let dateDays = 0;
           let requiredRate = 0;
           let formattedDateDate = "-";
+          const planStartDate = plan.start_date ? new Date(plan.start_date) : null;
 
           if (endDate) {
-            const todayMidnight = new Date(
-              today.getFullYear(),
-              today.getMonth(),
-              today.getDate(),
+            const shouldStartFromPlanDate =
+              count === 0 && planStartDate && today < planStartDate;
+
+            const baseDate = shouldStartFromPlanDate ? planStartDate : today;
+
+            const baseMidnight = new Date(
+              baseDate.getFullYear(),
+              baseDate.getMonth(),
+              baseDate.getDate(),
             );
             const endMidnight = new Date(
               endDate.getFullYear(),
               endDate.getMonth(),
               endDate.getDate(),
             );
-            const msDiff = endMidnight.getTime() - todayMidnight.getTime();
+            const msDiff = endMidnight.getTime() - baseMidnight.getTime();
             dateDays = Math.max(
               0,
               Math.ceil(msDiff / (24 * 60 * 60 * 1000)) + 1,
             );
+
+            // If there's already a positive entry for today, treat today's collection
+            // as applied and reduce the remaining days by one (but not below 0).
+            try {
+              const todayMid = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+              ).getTime();
+
+              const hasTodayPositiveEntry = (entries || []).some((en) => {
+                const d = en.date || en.created_at;
+                if (!d) return false;
+                const ed = new Date(d);
+                const edMid = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate()).getTime();
+                return edMid === todayMid && Number(en.amount || 0) > 0;
+              });
+
+              if (hasTodayPositiveEntry && dateDays > 0) {
+                dateDays = Math.max(0, dateDays - 1);
+              }
+            } catch (err) {
+              console.error("Error checking today's entries for date projection adjustment", err);
+            }
 
             if (progress > 0 && dateDays > 0) {
               requiredRate = Math.round(progress / dateDays);
@@ -2463,10 +2480,6 @@
           // Calculate Status Dynamically
           let statusText = "On Track";
           let statusClass = "badge bg-label-primary";
-
-          const planStartDate = plan.start_date
-            ? new Date(plan.start_date)
-            : null;
 
           if (count === 0 && planStartDate && today < planStartDate) {
             statusText = "Not Started";
