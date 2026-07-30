@@ -917,31 +917,31 @@
                   <div class="d-flex align-items-start justify-content-between">
                     <div class="me-3 flex-grow-1">
                       <h5 class="mb-1 fw-semibold text-truncate">${escapeHtml(p.title || "")}</h5>
-                      <small class="text-muted d-block fs-7"><span class="d-block">Start: ${start}</span><span class="d-block">End: ${end}</span></small>
                     </div>
                     <div class="d-flex align-items-start gap-2">
                       <span class="badge rounded-pill bg-primary px-3 py-2">${idx + 1}</span>
                       <span class="badge rounded-pill bg-label-primary px-3 py-2 fs-7">Active</span>
                     </div>
                   </div>
-                  <hr class="my-4" />
-                  <div class="row g-2 mb-4">
-                    <div class="col-4">
+                  <div class="row g-2 mt-3 mb-4">
+                    <div class="col">
                       <div class="bg-primary bg-opacity-10 border border-primary border-opacity-10 rounded-4 text-center p-3 px-2 h-100">
                         <small class="text-muted d-block mb-1 text-primary">Investment</small>
-                        <h6 class="mb-0 fw-bold">${formatNumber(p.investment)}</h6>
+                        <h6 class="mb-0 fw-bold text-primary">${formatNumber(p.investment)}</h6>
                       </div>
                     </div>
-                    <div class="col-4">
-                      <div class="bg-success bg-opacity-10 border border-success border-opacity-10 rounded-4 text-center p-3 px-2 h-100">
-                        <small class="text-muted d-block mb-1 text-success">Return</small>
-                        <h6 class="mb-0 fw-bold">${formatNumber(p.expected_return)}</h6>
+                  </div>
+                  <div class="row g-2 mb-4">
+                    <div class="col-6">
+                      <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
+                        <small class="text-muted d-block mb-1">Start Date</small>
+                        <div class="fw-semibold text-heading">${start}</div>
                       </div>
                     </div>
-                    <div class="col-4">
-                      <div class="bg-warning bg-opacity-10 border border-warning border-opacity-10 rounded-4 text-center p-3 px-2 h-100">
-                        <small class="text-muted d-block mb-1 text-warning">Daily</small>
-                        <h6 class="mb-0 fw-bold">${formatNumber(p.daily_collection_amount)}</h6>
+                    <div class="col-6">
+                      <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
+                        <small class="text-muted d-block mb-1">End Date</small>
+                        <div class="fw-semibold text-heading">${end}</div>
                       </div>
                     </div>
                   </div>
