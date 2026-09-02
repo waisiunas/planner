@@ -29,28 +29,62 @@ function initLayoutMenu() {
     window.Helpers.mainMenu = menuEl.menuInstance;
   }
 
-  const toggler = document.querySelector(".layout-menu-toggle");
-  if (toggler && toggler.getAttribute("data-partial-bound") !== "true") {
-    toggler.setAttribute("data-partial-bound", "true");
-    toggler.addEventListener("click", function (event) {
-      event.preventDefault();
-      window.Helpers.toggleCollapsed();
+  const togglers = document.querySelectorAll(".layout-menu-toggle");
+  togglers.forEach((toggler) => {
+    if (toggler.getAttribute("data-partial-bound") !== "true") {
+      toggler.setAttribute("data-partial-bound", "true");
+      toggler.addEventListener("click", function (event) {
+        event.preventDefault();
+        window.Helpers.toggleCollapsed();
 
-      if (
-        window.config &&
-        window.config.enableMenuLocalStorage &&
-        !window.Helpers.isSmallScreen()
-      ) {
-        try {
-          localStorage.setItem(
-            "templateCustomizer-" + templateName + "--LayoutCollapsed",
-            String(window.Helpers.isCollapsed()),
-          );
-        } catch (e) {
-          console.error("Failed to save menu state", e);
+        if (
+          window.config &&
+          window.config.enableMenuLocalStorage &&
+          !window.Helpers.isSmallScreen()
+        ) {
+          try {
+            const templateName =
+              window.templateName ||
+              document.documentElement.getAttribute("data-template") ||
+              "vertical-menu-template-starter";
+            localStorage.setItem(
+              "templateCustomizer-" + templateName + "--LayoutCollapsed",
+              String(window.Helpers.isCollapsed()),
+            );
+          } catch (e) {
+            console.error("Failed to save menu state", e);
+          }
         }
-      }
-    });
+      });
+    }
+  });
+}
+
+function setActiveSidebarItem() {
+  const currentPath = window.location.pathname.split("/").pop() || "index.html";
+  const matches = {
+    plansMenuItem: ["index.html", "show.html"],
+    dailyCollectionMenuItem: ["daily-collection.html"],
+  };
+
+  Object.entries(matches).forEach(([id, allowedPages]) => {
+    const item = document.getElementById(id);
+    if (!item) return;
+
+    const isActive = allowedPages.includes(currentPath);
+    item.classList.toggle("active", isActive);
+
+    const link = item.querySelector(".menu-link");
+    if (link) {
+      link.classList.toggle("active", isActive);
+    }
+  });
+}
+
+function updateFooterYear() {
+  const footerYear = document.getElementById("footerYear");
+  if (footerYear) {
+    footerYear.textContent = new Date().getFullYear();
   }
 }
 
@@ -80,6 +114,8 @@ async function loadPartials() {
   );
 
   initLayoutMenu();
+  setActiveSidebarItem();
+  updateFooterYear();
 }
 
 window.__partialsReady = loadPartials();
