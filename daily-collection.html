@@ -372,6 +372,28 @@
         return applicableRate;
       }
 
+      function calculateMilestoneDate(startDate, milestone, achievements) {
+        const baseDate = parseDateOnly(startDate);
+        baseDate.setDate(baseDate.getDate() + milestone - 1);
+
+        let adjustedDate = baseDate;
+        for (let iteration = 0; iteration < achievements.length + 1; iteration++) {
+          const extraDaysBeforeMilestone = achievements
+            .filter(
+              (achievement) =>
+                parseDateOnly(achievement.transaction_date) <= adjustedDate,
+            )
+            .reduce((total, achievement) => total + achievement.extraDays, 0);
+          const nextDate = parseDateOnly(startDate);
+          nextDate.setDate(
+            nextDate.getDate() + milestone - 1 - extraDaysBeforeMilestone,
+          );
+          if (nextDate.getTime() === adjustedDate.getTime()) return nextDate;
+          adjustedDate = nextDate;
+        }
+        return adjustedDate;
+      }
+
       function escapeHtml(value) {
         return String(value)
           .replace(/&/g, "&amp;")
@@ -631,8 +653,11 @@
         });
 
         for (let milestone = nextMilestone; milestone >= 100; milestone -= 100) {
-          const milestoneDate = parseDateOnly(startDate);
-          milestoneDate.setDate(milestoneDate.getDate() + milestone - 1);
+          const milestoneDate = calculateMilestoneDate(
+            startDate,
+            milestone,
+            extraAchievements,
+          );
           const isCompleted = milestone <= currentDays;
           milestones.push({
             date: milestoneDate,
