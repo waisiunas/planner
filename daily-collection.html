@@ -121,6 +121,18 @@
                 <div class="col-6">
                   <h4 class="mb-0">Secret Counter</h4>
                 </div>
+
+                <div class="col-6 text-end">
+                  <button
+                    id="goalButton"
+                    class="btn btn-primary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#goalModal"
+                  >
+                    Goal
+                  </button>
+                </div>
               </div>
               <!-- Alerts -->
               <div class="mt-3" id="alertsContainer"></div>
@@ -128,13 +140,79 @@
                 <div class="card-body p-3 p-md-6">
                   <div class="text-center py-3">
                     <div id="totalDaysCount" class="display-3 text-dark">
-                      0 days
+                      0
                     </div>
+                    <div class="text-muted mt-2"></div>
                     <div class="text-muted mt-2">
-                      <span id="dayStartDate">01-Aug-2025</span>
+                      <span id="dayStartDate">Loading...</span>
                       <span class="mx-2">-</span>
-                      <span id="dayEndDate">02-Sep-2026</span>
+                      <span id="dayEndDate">Loading...</span>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal fade" id="goalModal" tabindex="-1" aria-labelledby="goalModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="goalModalLabel">Manage savings goal</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="goalForm">
+                      <div class="modal-body">
+                        <div class="row g-3">
+                          <div class="col-md-4">
+                            <label class="form-label" for="goalName">Goal name</label>
+                            <input id="goalName" class="form-control" maxlength="100" required />
+                          </div>
+                          <div class="col-md-4">
+                            <label class="form-label" for="goalStartDate">Start date</label>
+                            <input id="goalStartDate" class="form-control" type="date" required />
+                          </div>
+                          <div class="col-md-4">
+                            <label class="form-label" for="goalTargetAmount">Target amount (optional)</label>
+                            <input id="goalTargetAmount" class="form-control" type="number" min="0.01" step="0.01" />
+                          </div>
+                        </div>
+                        <div class="border-top mt-4 pt-4">
+                          <h6 class="mb-3">Daily collection rate</h6>
+                          <div class="row g-3">
+                            <div class="col-md-5">
+                              <label class="form-label" for="dailyAmount">Daily amount</label>
+                              <input id="dailyAmount" class="form-control" type="number" min="0.01" step="0.01" required />
+                            </div>
+                            <div class="col-md-5">
+                              <label class="form-label" for="rateEffectiveFrom">Effective from</label>
+                              <input id="rateEffectiveFrom" class="form-control" type="date" required />
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                              <button id="saveRateButton" class="btn btn-outline-primary w-100" type="button">
+                                Add rate
+                              </button>
+                            </div>
+                          </div>
+                          <div class="table-responsive mt-4">
+                            <h6 class="mb-3">Configured daily rates</h6>
+                            <table class="table table-sm mb-0">
+                              <thead>
+                                <tr>
+                                  <th>Effective from</th>
+                                  <th class="text-end">Daily amount</th>
+                                </tr>
+                              </thead>
+                              <tbody id="ratesTableBody">
+                                <tr><td colspan="2" class="text-muted">Loading...</td></tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                        <button id="saveGoalButton" class="btn btn-primary" type="submit">Save goal</button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -224,7 +302,7 @@
     <script>
       function formatDateDMY(date) {
         if (!date) return "";
-        const d = new Date(date);
+        const d = parseDateOnly(date);
         if (Number.isNaN(d.getTime())) return "";
         const months = [
           "Jan",
@@ -246,9 +324,23 @@
         return `${day}-${month}-${year}`;
       }
 
+      function parseDateOnly(dateValue) {
+        if (dateValue instanceof Date) {
+          return new Date(
+            dateValue.getFullYear(),
+            dateValue.getMonth(),
+            dateValue.getDate(),
+          );
+        }
+
+        const [year, month, day] = String(dateValue).split("-").map(Number);
+        if (!year || !month || !day) return new Date(NaN);
+        return new Date(year, month - 1, day);
+      }
+
       function calculateInclusiveDays(startDateStr, endDateStr) {
-        const start = new Date(startDateStr);
-        const end = new Date(endDateStr);
+        const start = parseDateOnly(startDateStr);
+        const end = parseDateOnly(endDateStr);
 
         if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
           return 0;
@@ -270,11 +362,229 @@
         return Math.floor(diffDays) + 1;
       }
 
-      function renderAchievementTimeline(startDate, currentDate) {
+      function findDailyRateForDate(date, rates) {
+        let applicableRate = null;
+        rates.forEach((rate) => {
+          if (calculateInclusiveDays(rate.effective_from, date) >= 1) {
+            applicableRate = rate;
+          }
+        });
+        return applicableRate;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function showAlert(message, type = "danger") {
+        const alertsContainer = document.getElementById("alertsContainer");
+        if (!alertsContainer) return;
+        alertsContainer.innerHTML = `
+          <div class="alert alert-${type}" role="alert">${message}</div>
+        `;
+      }
+
+      let currentGoal = null;
+      let currentRates = [];
+
+      function setGoalForm(goal) {
+        document.getElementById("goalName").value = goal?.goal_name || "";
+        document.getElementById("goalStartDate").value = goal?.start_date || "";
+        document.getElementById("goalTargetAmount").value =
+          goal?.target_amount ?? "";
+      }
+
+      function renderRatesTable(rates) {
+        const tableBody = document.getElementById("ratesTableBody");
+        if (!tableBody) return;
+        if (!rates.length) {
+          tableBody.innerHTML =
+            '<tr><td colspan="2" class="text-muted">No daily rates configured.</td></tr>';
+          return;
+        }
+        tableBody.innerHTML = rates
+          .map(
+            (rate) => `
+              <tr>
+                <td>${formatDateDMY(rate.effective_from)}</td>
+                <td class="text-end">${Number(rate.daily_amount).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}</td>
+              </tr>
+            `,
+          )
+          .join("");
+      }
+
+      async function saveGoal(event) {
+        event.preventDefault();
+        const goalName = document.getElementById("goalName").value.trim();
+        const startDate = document.getElementById("goalStartDate").value;
+        const targetValue = document.getElementById("goalTargetAmount").value;
+        const saveButton = document.getElementById("saveGoalButton");
+        if (!goalName || !startDate) return;
+
+        saveButton.disabled = true;
+        try {
+          const payload = {
+            goal_name: goalName,
+            start_date: startDate,
+            target_amount: targetValue ? Number(targetValue) : null,
+          };
+          const query = currentGoal
+            ? supabase
+                .from("savings_goals")
+                .update(payload)
+                .eq("id", currentGoal.id)
+            : supabase.from("savings_goals").insert(payload);
+          const { error } = await query;
+          if (error) throw error;
+          showAlert("Goal saved successfully.", "success");
+          await loadSavingsGoal();
+          bootstrap.Modal.getOrCreateInstance(
+            document.getElementById("goalModal"),
+          ).hide();
+        } catch (error) {
+          console.error("Failed to save savings goal:", error);
+          showAlert(`Failed to save goal: ${error.message || error}`);
+        } finally {
+          saveButton.disabled = false;
+        }
+      }
+
+      async function saveDailyRate(event) {
+        event.preventDefault();
+        if (!currentGoal) {
+          showAlert("Create a savings goal before adding a daily rate.", "warning");
+          return;
+        }
+        const amount = Number(document.getElementById("dailyAmount").value);
+        const effectiveFrom = document.getElementById("rateEffectiveFrom").value;
+        const saveButton = document.getElementById("saveRateButton");
+        if (!amount || amount <= 0 || !effectiveFrom) return;
+
+        saveButton.disabled = true;
+        try {
+          const { error } = await supabase
+            .from("savings_daily_rates")
+            .upsert(
+              {
+                goal_id: currentGoal.id,
+                daily_amount: amount,
+                effective_from: effectiveFrom,
+              },
+              { onConflict: "goal_id,effective_from" },
+            );
+          if (error) throw error;
+          document.getElementById("dailyAmount").value = "";
+          document.getElementById("rateEffectiveFrom").value = "";
+          showAlert("Daily rate saved successfully.", "success");
+          await loadSavingsGoal();
+        } catch (error) {
+          console.error("Failed to save daily rate:", error);
+          showAlert(`Failed to save daily rate: ${error.message || error}`);
+        } finally {
+          saveButton.disabled = false;
+        }
+      }
+
+      async function loadSavingsGoal() {
+        const { data: goals, error: goalError } = await supabase
+          .from("savings_goals")
+          .select("*")
+          .order("start_date", { ascending: false })
+          .limit(1);
+
+        if (goalError) throw goalError;
+        const goal = goals?.[0];
+        if (!goal) {
+          currentGoal = null;
+          currentRates = [];
+          setGoalForm(null);
+          renderRatesTable([]);
+          throw new Error("No savings goal was found. Create one below.");
+        }
+        currentGoal = goal;
+        setGoalForm(goal);
+
+        const [{ data: rates, error: ratesError }, { data: transactions, error: transactionsError }] =
+          await Promise.all([
+            supabase
+              .from("savings_daily_rates")
+              .select("daily_amount, effective_from")
+              .eq("goal_id", goal.id)
+              .order("effective_from", { ascending: true }),
+            supabase
+              .from("savings_transactions")
+              .select("amount, transaction_date")
+              .eq("goal_id", goal.id)
+              .order("transaction_date", { ascending: true }),
+          ]);
+
+        if (ratesError) throw ratesError;
+        if (transactionsError) throw transactionsError;
+        currentRates = rates || [];
+        renderRatesTable(currentRates);
+
+        const currentDate = new Date();
+        const achievements = (transactions || [])
+          .map((transaction) => {
+            const isIncluded =
+              calculateInclusiveDays(transaction.transaction_date, currentDate) >= 1 &&
+              calculateInclusiveDays(goal.start_date, transaction.transaction_date) >= 1;
+            if (!isIncluded) return null;
+
+            const rate = findDailyRateForDate(
+              transaction.transaction_date,
+              rates || [],
+            );
+            if (!rate || Number(rate.daily_amount) <= 0) return null;
+            return {
+              ...transaction,
+              extraDays: Number(transaction.amount) / Number(rate.daily_amount),
+            };
+          })
+          .filter(Boolean);
+        const extraDays = achievements.reduce(
+          (total, achievement) => total + achievement.extraDays,
+          0,
+        );
+
+        const totalDaysEl = document.getElementById("totalDaysCount");
+        const startDateEl = document.getElementById("dayStartDate");
+        const endDateEl = document.getElementById("dayEndDate");
+        if (totalDaysEl) {
+          totalDaysEl.textContent = Number(
+            calculateInclusiveDays(goal.start_date, currentDate) + extraDays,
+          ).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        }
+        if (startDateEl) startDateEl.textContent = formatDateDMY(goal.start_date);
+        if (endDateEl) endDateEl.textContent = formatDateDMY(currentDate);
+        renderAchievementTimeline(
+          goal.start_date,
+          currentDate,
+          achievements,
+          extraDays,
+        );
+      }
+
+      function renderAchievementTimeline(
+        startDate,
+        currentDate,
+        extraAchievements = [],
+        extraDays = 0,
+      ) {
         const timeline = document.getElementById("achievementTimeline");
         if (!timeline) return;
 
-        const currentDays = calculateInclusiveDays(startDate, currentDate);
+        const calendarDays = calculateInclusiveDays(startDate, currentDate);
+        const currentDays = calendarDays + extraDays;
         if (currentDays < 1) {
           timeline.innerHTML =
             '<li class="timeline-item timeline-item-transparent mb-0">' +
@@ -303,41 +613,81 @@
         if (statusEl) statusEl.textContent = `Day ${currentDays} of ${nextMilestone}`;
         const milestones = [];
 
+        milestones.push({
+          date: parseDateOnly(startDate),
+          html: `
+            <li class="timeline-item mb-4">
+              <span class="timeline-indicator-advanced mt-2 timeline-indicator-success">
+                <i class="icon-base bx bx-flag"></i>
+              </span>
+              <div class="timeline-event p-3">
+                <div class="d-flex justify-content-between border-bottom mb-2 pb-2">
+                  <h6 class="mb-0">Journey Started</h6>
+                  <small class="text-muted">${formatDateDMY(startDate)}</small>
+                </div>
+              </div>
+            </li>
+          `,
+        });
+
         for (let milestone = nextMilestone; milestone >= 100; milestone -= 100) {
-          const milestoneDate = new Date(startDate);
+          const milestoneDate = parseDateOnly(startDate);
           milestoneDate.setDate(milestoneDate.getDate() + milestone - 1);
           const isCompleted = milestone <= currentDays;
-          milestones.push(`
+          milestones.push({
+            date: milestoneDate,
+            html: `
             <li class="timeline-item mb-4">
               <span class="timeline-indicator-advanced mt-2 ${isCompleted ? "timeline-indicator-success" : "timeline-indicator-primary"}">
                 <i class="icon-base bx ${isCompleted ? "bx-check" : "bx-lock-open-alt"}"></i>
               </span>
               <div class="timeline-event p-3">
                 <div class="d-flex justify-content-between border-bottom mb-2 pb-2">
-                  <h6 class="mb-0">${milestone} days</h6>
+                  <h6 class="mb-0">${milestone}</h6>
                   <small class="text-muted">${formatDateDMY(milestoneDate)}</small>
                 </div>
               </div>
             </li>
-          `);
+          `,
+          });
         }
 
-        timeline.innerHTML = milestones.join("");
+        extraAchievements.forEach((achievement) => {
+          milestones.push({
+            date: parseDateOnly(achievement.transaction_date),
+            html: `
+              <li class="timeline-item mb-4">
+                <span class="timeline-indicator-advanced mt-2 timeline-indicator-success">
+                  <i class="icon-base bx bx-plus"></i>
+                </span>
+                <div class="timeline-event p-3">
+                  <div class="d-flex justify-content-between border-bottom mb-2 pb-2">
+                    <h6 class="mb-0">+${achievement.extraDays}</h6>
+                    <small class="text-muted">${formatDateDMY(achievement.transaction_date)}</small>
+                  </div>
+                </div>
+              </li>
+            `,
+          });
+        });
+
+        timeline.innerHTML = milestones
+          .sort((left, right) => right.date - left.date)
+          .map((achievement) => achievement.html)
+          .join("");
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        const startDate = "2025-08-01";
-        const endDate = new Date();
-
-        const totalDays = calculateInclusiveDays(startDate, endDate);
-        const totalDaysEl = document.getElementById("totalDaysCount");
-        const startDateEl = document.getElementById("dayStartDate");
-        const endDateEl = document.getElementById("dayEndDate");
-
-        if (totalDaysEl) totalDaysEl.textContent = totalDays + ' days';
-        if (startDateEl) startDateEl.textContent = formatDateDMY(startDate);
-        if (endDateEl) endDateEl.textContent = formatDateDMY(endDate);
-        renderAchievementTimeline(startDate, endDate);
+      document.addEventListener("DOMContentLoaded", async function () {
+        document.getElementById("goalForm")?.addEventListener("submit", saveGoal);
+        document
+          .getElementById("saveRateButton")
+          ?.addEventListener("click", saveDailyRate);
+        try {
+          await loadSavingsGoal();
+        } catch (error) {
+          console.error("Failed to load savings goal:", error);
+          showAlert("Unable to load the savings counter. Please try again later.");
+        }
       });
     </script>
   </body>

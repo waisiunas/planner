@@ -119,3 +119,46 @@ async function loadPartials() {
 }
 
 window.__partialsReady = loadPartials();
+
+const obj = {
+  date: "20-September-2026",
+
+  purchases: 50600,
+
+  income: {
+    counter: 130000,
+    bank: 0,
+  },
+
+  // Amount taken from today's counter collection
+  // because yesterday's available cash was insufficient
+  shortfallCoverFromCounter: {
+    purchases: 0,
+    expenses: 0,
+  },
+
+  // Actual business expenses incurred
+  expenses: 2000,
+
+  // External money added to the business
+  externalFunds: {
+    committee: 10000,
+    self: 0,
+    others: 0,
+  },
+
+  // Money taken out from the business
+  withdrawals: {
+    box: 24000,
+
+    committee: {
+      amir: 0,
+      hanif: 0,
+      nazir: 5000,
+    },
+
+    investment: {
+      awais: 0,
+    },
+  },
+};
