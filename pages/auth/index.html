@@ -260,7 +260,7 @@
             data: { session },
           } = await supa.auth.getSession();
           if (session) {
-            window.location.href = "../../index.html";
+            window.location.href = "../plan/index.html";
             return;
           }
         } catch (err) {
@@ -291,7 +291,7 @@
             if (error) throw error;
             showAlert("success", "Signed in successfully. Redirecting...");
             setTimeout(() => {
-              window.location.href = "../../index.html";
+              window.location.href = "../plan/index.html";
             }, 800);
           } catch (err) {
             console.error("Login error", err);

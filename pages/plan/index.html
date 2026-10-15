@@ -86,7 +86,7 @@
             data: { session },
           } = await supabase.auth.getSession();
           if (!session) {
-            window.location.href = "./login.html";
+            window.location.href = "../auth/index.html";
           }
         } catch (err) {
           console.error("Auth guard check failed", err);
@@ -994,7 +994,7 @@
             e.preventDefault();
             try {
               await supabase.auth.signOut();
-              window.location.href = "./login.html";
+              window.location.href = "../auth/index.html";
             } catch (err) {
               console.error("Sign out failed:", err);
             }

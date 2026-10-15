@@ -160,6 +160,38 @@ function updateFooterYear() {
   }
 }
 
+function initLogout() {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (!logoutBtn || logoutBtn.getAttribute("data-logout-bound") === "true") {
+    return;
+  }
+
+  logoutBtn.setAttribute("data-logout-bound", "true");
+  logoutBtn.addEventListener("click", async function (event) {
+    event.preventDefault();
+
+    try {
+      const config = window.__SUPABASE_CONFIG || {};
+      let supabaseClient =
+        typeof supabase !== "undefined" ? supabase : window.__supabase_client;
+
+      if (!supabaseClient && window.supabase && config.url && config.key) {
+        supabaseClient = window.supabase.createClient(config.url, config.key);
+      }
+
+      if (!supabaseClient) {
+        throw new Error("Supabase authentication is not configured.");
+      }
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+
+      window.location.href = "../../pages/auth/index.html";
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
+  });
+}
+
 async function loadPartials() {
   const partialNodes = Array.from(
     document.querySelectorAll("[data-include-partial]"),
@@ -188,6 +220,7 @@ async function loadPartials() {
   initLayoutMenu();
   applyInitialMenuState();
   initThemeControls();
+  initLogout();
   updateFooterYear();
 }
 
