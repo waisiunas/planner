@@ -58,27 +58,99 @@ function initLayoutMenu() {
       });
     }
   });
+
+  if (window.Helpers.initSidebarToggle) {
+    window.Helpers.initSidebarToggle();
+  }
+
+  const menu = document.getElementById("layout-menu");
+  const menuToggle = menu
+    ? menu.querySelector(".layout-menu-toggle")
+    : null;
+  if (menu && menuToggle && !menu.hasAttribute("data-hover-bound")) {
+    menu.setAttribute("data-hover-bound", "true");
+    let hoverTimeout = null;
+
+    menu.onmouseenter = function () {
+      hoverTimeout = setTimeout(
+        function () {
+          if (!window.Helpers.isSmallScreen()) {
+            menuToggle.classList.add("d-block");
+          }
+        },
+        window.Helpers.isSmallScreen() ? 0 : 300,
+      );
+    };
+
+    menu.onmouseleave = function () {
+      menuToggle.classList.remove("d-block");
+      clearTimeout(hoverTimeout);
+    };
+  }
 }
 
-function setActiveSidebarItem() {
-  const currentPath = window.location.pathname.split("/").pop() || "index.html";
-  const matches = {
-    plansMenuItem: ["index.html", "show.html"],
-    dailyCollectionMenuItem: ["daily-collection.html"],
-  };
+function applyInitialMenuState() {
+  if (
+    !window.Helpers ||
+    window.Helpers.isSmallScreen() ||
+    !document.getElementById("layout-menu")
+  ) {
+    return;
+  }
 
-  Object.entries(matches).forEach(([id, allowedPages]) => {
-    const item = document.getElementById(id);
-    if (!item) return;
+  let collapsed;
+  const templateName =
+    window.templateName ||
+    document.documentElement.getAttribute("data-template") ||
+    "vertical-menu-template-starter";
 
-    const isActive = allowedPages.includes(currentPath);
-    item.classList.toggle("active", isActive);
+  if (window.templateCustomizer) {
+    collapsed = window.templateCustomizer.settings.defaultMenuCollapsed;
+  } else {
+    collapsed = false;
+  }
 
-    const link = item.querySelector(".menu-link");
-    if (link) {
-      link.classList.toggle("active", isActive);
-    }
-  });
+  if (
+    window.config &&
+    window.config.enableMenuLocalStorage &&
+    localStorage.getItem(
+      "templateCustomizer-" + templateName + "--LayoutCollapsed",
+    ) !== null
+  ) {
+    collapsed =
+      localStorage.getItem(
+        "templateCustomizer-" + templateName + "--LayoutCollapsed",
+      ) === "true";
+  }
+
+  window.Helpers.setCollapsed(collapsed, false);
+}
+
+function initThemeControls() {
+  if (!window.Helpers) return;
+
+  const templateName =
+    window.templateName ||
+    document.documentElement.getAttribute("data-template") ||
+    "vertical-menu-template-starter";
+  const preferredTheme = window.Helpers.getPreferredTheme();
+  window.Helpers.showActiveTheme(preferredTheme);
+
+  document
+    .querySelectorAll("[data-bs-theme-value]")
+    .forEach((toggle) => {
+      if (toggle.getAttribute("data-theme-bound") === "true") return;
+      toggle.setAttribute("data-theme-bound", "true");
+      toggle.addEventListener("click", () => {
+        const theme = toggle.getAttribute("data-bs-theme-value");
+        if (!theme) return;
+
+        window.Helpers.setStoredTheme(templateName, theme);
+        window.Helpers.setTheme(theme);
+        window.Helpers.showActiveTheme(theme, true);
+        window.Helpers.syncCustomOptions(theme);
+      });
+    });
 }
 
 function updateFooterYear() {
@@ -114,51 +186,9 @@ async function loadPartials() {
   );
 
   initLayoutMenu();
-  setActiveSidebarItem();
+  applyInitialMenuState();
+  initThemeControls();
   updateFooterYear();
 }
 
 window.__partialsReady = loadPartials();
-
-const obj = {
-  date: "20-September-2026",
-
-  purchases: 50600,
-
-  income: {
-    counter: 130000,
-    bank: 0,
-  },
-
-  // Amount taken from today's counter collection
-  // because yesterday's available cash was insufficient
-  shortfallCoverFromCounter: {
-    purchases: 0,
-    expenses: 0,
-  },
-
-  // Actual business expenses incurred
-  expenses: 2000,
-
-  // External money added to the business
-  externalFunds: {
-    committee: 10000,
-    self: 0,
-    others: 0,
-  },
-
-  // Money taken out from the business
-  withdrawals: {
-    box: 24000,
-
-    committee: {
-      amir: 0,
-      hanif: 0,
-      nazir: 5000,
-    },
-
-    investment: {
-      awais: 0,
-    },
-  },
-};
