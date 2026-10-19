@@ -86,7 +86,7 @@
             data: { session },
           } = await supabase.auth.getSession();
           if (!session) {
-            window.location.href = "./login.html";
+            window.location.href = "../auth/index.html";
           }
         } catch (err) {
           console.error("Auth guard check failed", err);
@@ -125,12 +125,13 @@
                 <div class="col-6 text-end">
                   <button
                     id="goalButton"
-                    class="btn btn-primary"
+                    class="btn btn-primary rounded-4"
                     type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#goalModal"
                   >
-                    Goal
+                    <span class="icon-base bx bx-cog icon-sm me-md-2"></span>
+                    <span class="d-none d-md-inline">Goal</span>
                   </button>
                 </div>
               </div>
@@ -156,42 +157,61 @@
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="goalModalLabel">Manage savings goal</h5>
+                      <h5 class="modal-title" id="goalModalLabel">Manage Secret Counter</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="goalForm">
-                      <div class="modal-body">
-                        <div class="row g-3">
-                          <div class="col-md-4">
-                            <label class="form-label" for="goalName">Goal name</label>
-                            <input id="goalName" class="form-control" maxlength="100" required />
-                          </div>
-                          <div class="col-md-4">
-                            <label class="form-label" for="goalStartDate">Start date</label>
-                            <input id="goalStartDate" class="form-control" type="date" required />
-                          </div>
-                          <div class="col-md-4">
-                            <label class="form-label" for="goalTargetAmount">Target amount (optional)</label>
-                            <input id="goalTargetAmount" class="form-control" type="number" min="0.01" step="0.01" />
-                          </div>
+                    <div class="modal-body">
+                      <ul class="nav nav-tabs mb-4" role="tablist">
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#goalTab" type="button" role="tab">Goal</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rateTab" type="button" role="tab">Rate</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#extraTab" type="button" role="tab">Extra</button>
+                        </li>
+                      </ul>
+
+                      <div class="tab-content p-0">
+                        <div class="tab-pane fade show active" id="goalTab" role="tabpanel">
+                          <form id="goalForm">
+                            <div class="row g-3">
+                              <div class="col-md-4">
+                                <label class="form-label" for="goalName">Goal name</label>
+                                <input id="goalName" class="form-control" maxlength="100" required />
+                              </div>
+                              <div class="col-md-4">
+                                <label class="form-label" for="goalStartDate">Start date</label>
+                                <input id="goalStartDate" class="form-control" type="date" required />
+                              </div>
+                              <div class="col-md-4">
+                                <label class="form-label" for="goalTargetAmount">Target amount (optional)</label>
+                                <input id="goalTargetAmount" class="form-control" type="number" min="0.01" step="0.01" />
+                              </div>
+                            </div>
+                            <div class="text-end mt-4">
+                              <button id="saveGoalButton" class="btn btn-outline-primary w-100" type="submit">Save Goal</button>
+                            </div>
+                          </form>
                         </div>
-                        <div class="border-top mt-4 pt-4">
-                          <h6 class="mb-3">Daily collection rate</h6>
-                          <div class="row g-3">
-                            <div class="col-md-5">
-                              <label class="form-label" for="dailyAmount">Daily amount</label>
-                              <input id="dailyAmount" class="form-control" type="number" min="0.01" step="0.01" required />
+
+                        <div class="tab-pane fade" id="rateTab" role="tabpanel">
+                          <form id="rateForm">
+                            <div class="row g-3">
+                              <div class="col-md-5">
+                                <label class="form-label" for="dailyAmount">Daily amount</label>
+                                <input id="dailyAmount" class="form-control" type="number" min="0.01" step="0.01" required />
+                              </div>
+                              <div class="col-md-5">
+                                <label class="form-label" for="rateEffectiveFrom">Effective from</label>
+                                <input id="rateEffectiveFrom" class="form-control" type="date" required />
+                              </div>
+                              <div class="col-md-2 d-flex align-items-end">
+                                <button id="saveRateButton" class="btn btn-outline-primary w-100" type="submit">Add Rate</button>
+                              </div>
                             </div>
-                            <div class="col-md-5">
-                              <label class="form-label" for="rateEffectiveFrom">Effective from</label>
-                              <input id="rateEffectiveFrom" class="form-control" type="date" required />
-                            </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                              <button id="saveRateButton" class="btn btn-outline-primary w-100" type="button">
-                                Add rate
-                              </button>
-                            </div>
-                          </div>
+                          </form>
                           <div class="table-responsive mt-4">
                             <h6 class="mb-3">Configured daily rates</h6>
                             <table class="table table-sm mb-0">
@@ -199,20 +219,52 @@
                                 <tr>
                                   <th>Effective from</th>
                                   <th class="text-end">Daily amount</th>
+                                  <th class="text-end">Total collected</th>
                                 </tr>
                               </thead>
                               <tbody id="ratesTableBody">
+                                <tr><td colspan="3" class="text-muted">Loading...</td></tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="extraTab" role="tabpanel">
+                          <form id="extraForm">
+                            <div class="row g-3">
+                              <div class="col-md">
+                                <label class="form-label" for="extraAmount">Extra amount</label>
+                                <input id="extraAmount" class="form-control" type="number" min="0.01" step="0.01" required />
+                              </div>
+                              <div class="col-md">
+                                <label class="form-label" for="extraDate">Contribution date</label>
+                                <input id="extraDate" class="form-control" type="date" required />
+                              </div>
+                              <div class="col-md-auto d-flex align-items-end">
+                                <button id="saveExtraButton" class="btn btn-outline-primary w-100" type="submit">Add Extra</button>
+                              </div>
+                            </div>
+                          </form>
+                          <div class="table-responsive mt-4">
+                            <h6 class="mb-3">Extra contributions</h6>
+                            <table class="table table-sm mb-0">
+                              <thead>
+                                <tr>
+                                  <th>Date</th>
+                                  <th class="text-end">Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody id="extrasTableBody">
                                 <tr><td colspan="2" class="text-muted">Loading...</td></tr>
                               </tbody>
                             </table>
                           </div>
                         </div>
                       </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                        <button id="saveGoalButton" class="btn btn-primary" type="submit">Save goal</button>
-                      </div>
-                    </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -376,6 +428,15 @@
         return applicableRate;
       }
 
+      function calculateConfiguredRateTotal(rate, currentDate) {
+        const elapsedDays = calculateInclusiveDays(
+          rate.effective_from,
+          currentDate,
+        );
+        if (elapsedDays <= 0) return 0;
+        return elapsedDays * Number(rate.daily_amount || 0);
+      }
+
       function calculateMilestoneDate(startDate, milestone, achievements) {
         const baseDate = parseDateOnly(startDate);
         baseDate.setDate(baseDate.getDate() + milestone - 1);
@@ -417,6 +478,7 @@
 
       let currentGoal = null;
       let currentRates = [];
+      let currentTransactions = [];
 
       function setGoalForm(goal) {
         document.getElementById("goalName").value = goal?.goal_name || "";
@@ -430,7 +492,7 @@
         if (!tableBody) return;
         if (!rates.length) {
           tableBody.innerHTML =
-            '<tr><td colspan="2" class="text-muted">No daily rates configured.</td></tr>';
+            '<tr><td colspan="3" class="text-muted">No daily rates configured.</td></tr>';
           return;
         }
         tableBody.innerHTML = rates
@@ -439,6 +501,33 @@
               <tr>
                 <td>${formatDateDMY(rate.effective_from)}</td>
                 <td class="text-end">${Number(rate.daily_amount).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}</td>
+                <td class="text-end">${Number(rate.total_collected || 0).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}</td>
+              </tr>
+            `,
+          )
+          .join("");
+      }
+
+      function renderExtrasTable(transactions) {
+        const tableBody = document.getElementById("extrasTableBody");
+        if (!tableBody) return;
+        if (!transactions.length) {
+          tableBody.innerHTML =
+            '<tr><td colspan="2" class="text-muted">No extra contributions configured.</td></tr>';
+          return;
+        }
+        tableBody.innerHTML = transactions
+          .map(
+            (transaction) => `
+              <tr>
+                <td>${formatDateDMY(transaction.transaction_date)}</td>
+                <td class="text-end">${Number(transaction.amount).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}</td>
@@ -484,12 +573,50 @@
         }
       }
 
+      async function saveExtraContribution(event) {
+        event?.preventDefault();
+        if (!currentGoal) {
+          showAlert("Create a savings goal before adding an extra contribution.", "warning");
+          return;
+        }
+
+        const amountInput = document.getElementById("extraAmount");
+        const dateInput = document.getElementById("extraDate");
+        const saveButton = document.getElementById("saveExtraButton");
+        const amount = Number(amountInput.value);
+        const transactionDate = dateInput.value;
+        if (!amount || amount <= 0 || !transactionDate) return;
+
+        saveButton.disabled = true;
+        try {
+          const { error } = await supabase
+            .from("savings_transactions")
+            .insert({
+              goal_id: currentGoal.id,
+              amount,
+              transaction_date: transactionDate,
+            });
+          if (error) throw error;
+
+          amountInput.value = "";
+          dateInput.value = "";
+          showAlert("Extra contribution saved successfully.", "success");
+          await loadSavingsGoal();
+        } catch (error) {
+          console.error("Failed to save extra contribution:", error);
+          showAlert(`Failed to save extra contribution: ${error.message || error}`);
+        } finally {
+          saveButton.disabled = false;
+        }
+      }
+
       async function saveDailyRate(event) {
         event.preventDefault();
         if (!currentGoal) {
           showAlert("Create a savings goal before adding a daily rate.", "warning");
           return;
         }
+
         const amount = Number(document.getElementById("dailyAmount").value);
         const effectiveFrom = document.getElementById("rateEffectiveFrom").value;
         const saveButton = document.getElementById("saveRateButton");
@@ -532,8 +659,10 @@
         if (!goal) {
           currentGoal = null;
           currentRates = [];
+          currentTransactions = [];
           setGoalForm(null);
           renderRatesTable([]);
+          renderExtrasTable([]);
           throw new Error("No savings goal was found. Create one below.");
         }
         currentGoal = goal;
@@ -556,10 +685,16 @@
         if (ratesError) throw ratesError;
         if (transactionsError) throw transactionsError;
         currentRates = rates || [];
-        renderRatesTable(currentRates);
-
+        currentTransactions = transactions || [];
         const currentDate = new Date();
-        const achievements = (transactions || [])
+        currentRates = currentRates.map((rate) => ({
+          ...rate,
+          total_collected: calculateConfiguredRateTotal(rate, currentDate),
+        }));
+        renderRatesTable(currentRates);
+        renderExtrasTable(currentTransactions);
+
+        const achievements = currentTransactions
           .map((transaction) => {
             const isIncluded =
               calculateInclusiveDays(transaction.transaction_date, currentDate) >= 1 &&
@@ -708,9 +843,8 @@
 
       document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("goalForm")?.addEventListener("submit", saveGoal);
-        document
-          .getElementById("saveRateButton")
-          ?.addEventListener("click", saveDailyRate);
+        document.getElementById("rateForm")?.addEventListener("submit", saveDailyRate);
+        document.getElementById("extraForm")?.addEventListener("submit", saveExtraContribution);
         try {
           await loadSavingsGoal();
         } catch (error) {

@@ -822,12 +822,6 @@
                                       </div>
                                     </div>
                                   </div>
-
-                                  <!-- <div class="avatar">
-														<span class="avatar-initial rounded bg-label-primary">
-															<i class="icon-base bx bx-target-lock icon-lg"></i>
-														</span>
-													</div> -->
                                 </div>
                               </div>
                             </div>
@@ -835,13 +829,13 @@
                         </div>
                       </div>
 
-                      <div class="card-header py-0">
-                        <div class="row align-items-center">
-                          <div class="col-6">
-                            <h5 class="card-title m-0">Entries</h5>
-                          </div>
+                      <div class="card-header">
+                        <div
+                          class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+                        >
+                          <h5 class="card-title m-0">Entries</h5>
 
-                          <div class="col-6 text-end">
+                          <div class="d-flex align-items-center gap-2">
                             <button
                               type="button"
                               class="rounded-4 btn btn-primary"
@@ -854,424 +848,440 @@
                               ></span>
                               <span class="d-none d-md-inline">Entry</span>
                             </button>
+
+                            <div class="dropdown" id="entriesViewDropdown">
+                              <button
+                                type="button"
+                                class="btn btn-outline-primary rounded-4 dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                              >
+                                <span
+                                  class="icon-base bx bx-layout icon-sm me-1"
+                                ></span>
+                                <span
+                                  id="currentViewLabel"
+                                  class="d-none d-md-inline"
+                                >
+                                  Grid
+                                </span>
+                              </button>
+
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button
+                                    type="button"
+                                    class="dropdown-item active"
+                                    id="gridViewOption"
+                                  >
+                                    <span
+                                      class="icon-base bx bx-grid-alt me-2"
+                                    ></span>
+                                    Grid view
+                                  </button>
+                                </li>
+                                <li>
+                                  <button
+                                    type="button"
+                                    class="dropdown-item"
+                                    id="tableViewOption"
+                                  >
+                                    <span
+                                      class="icon-base bx bx-table me-2"
+                                    ></span>
+                                    Table view
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
                           </div>
                         </div>
                       </div>
 
                       <div class="card-body p-3 p-md-4">
-                        <div
-                          class="card border border border-light border-opacity-50 rounded-5"
-                        >
-                          <div class="card-body p-3 p-md-4">
-                            <div class="text-end">
-                              <div class="btn-group mb-4" role="group">
-                                <button
-                                  type="button"
-                                  class="btn btn-outline-primary rounded-4"
-                                  id="gridViewBtn"
-                                >
-                                  <span
-                                    class="icon-base bx bx-grid-alt icon-sm"
-                                  ></span>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  class="btn btn-outline-primary active rounded-4"
-                                  id="tableViewBtn"
-                                >
-                                  <span
-                                    class="icon-base bx bx-table icon-sm"
-                                  ></span>
-                                </button>
-                              </div>
-                            </div>
-
-                            <div id="gridView">
-                              <div class="row g-4"></div>
-                            </div>
-
-                            <div id="tableView" class="d-none">
-                              <div class="table-responsive text-nowrap">
-                                <table
-                                  class="table table-hover table-bordered table-sm m-0"
-                                >
-                                  <thead>
-                                    <tr>
-                                      <th>#</th>
-                                      <th>Date</th>
-                                      <th>Amount</th>
-                                      <th>Collected</th>
-                                      <th>Remaining</th>
-                                      <th>Action</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    <tr>
-                                      <td>1</td>
-
-                                      <td>15-May-2026</td>
-
-                                      <td>11,000</td>
-
-                                      <td>134,000</td>
-
-                                      <td>145,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/15/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>2</td>
-
-                                      <td>14-May-2026</td>
-
-                                      <td>9,000</td>
-
-                                      <td>125,000</td>
-
-                                      <td>134,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/14/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>3</td>
-
-                                      <td>13-May-2026</td>
+                        <div id="gridView">
+                          <div class="row g-4"></div>
+                        </div>
+
+                        <div id="tableView" class="d-none">
+                          <div class="table-responsive text-nowrap">
+                            <table
+                              class="table table-hover table-bordered table-sm m-0"
+                            >
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th>Date</th>
+                                  <th>Amount</th>
+                                  <th>Collected</th>
+                                  <th>Remaining</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                <tr>
+                                  <td>1</td>
+
+                                  <td>15-May-2026</td>
+
+                                  <td>11,000</td>
+
+                                  <td>134,000</td>
+
+                                  <td>145,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/15/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>2</td>
+
+                                  <td>14-May-2026</td>
+
+                                  <td>9,000</td>
+
+                                  <td>125,000</td>
+
+                                  <td>134,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/14/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>3</td>
+
+                                  <td>13-May-2026</td>
+
+                                  <td>10,000</td>
+
+                                  <td>115,000</td>
+
+                                  <td>125,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/13/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>4</td>
+
+                                  <td>12-May-2026</td>
+
+                                  <td>10,000</td>
+
+                                  <td>105,000</td>
 
-                                      <td>10,000</td>
+                                  <td>115,000</td>
 
-                                      <td>115,000</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/12/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>5</td>
+
+                                  <td>11-May-2026</td>
+
+                                  <td>10,000</td>
 
-                                      <td>125,000</td>
+                                  <td>95,000</td>
 
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/13/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
+                                  <td>105,000</td>
 
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>4</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/11/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>6</td>
+
+                                  <td>10-May-2026</td>
+
+                                  <td>10,000</td>
 
-                                      <td>12-May-2026</td>
+                                  <td>85,000</td>
 
-                                      <td>10,000</td>
+                                  <td>95,000</td>
 
-                                      <td>105,000</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/10/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>7</td>
+
+                                  <td>09-May-2026</td>
+
+                                  <td>10,000</td>
 
-                                      <td>115,000</td>
+                                  <td>75,000</td>
 
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/12/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
+                                  <td>85,000</td>
 
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>5</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/9/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>8</td>
+
+                                  <td>08-May-2026</td>
+
+                                  <td>9,000</td>
 
-                                      <td>11-May-2026</td>
+                                  <td>66,000</td>
 
-                                      <td>10,000</td>
+                                  <td>75,000</td>
 
-                                      <td>95,000</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/8/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>9</td>
+
+                                  <td>07-May-2026</td>
+
+                                  <td>9,000</td>
 
-                                      <td>105,000</td>
+                                  <td>57,000</td>
 
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/11/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
+                                  <td>66,000</td>
 
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>6</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/7/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>10</td>
+
+                                  <td>06-May-2026</td>
+
+                                  <td>7,000</td>
 
-                                      <td>10-May-2026</td>
+                                  <td>50,000</td>
 
-                                      <td>10,000</td>
+                                  <td>57,000</td>
 
-                                      <td>85,000</td>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/6/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>11</td>
+
+                                  <td>05-May-2026</td>
+
+                                  <td>9,000</td>
 
-                                      <td>95,000</td>
+                                  <td>41,000</td>
 
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/10/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
+                                  <td>50,000</td>
 
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>7</td>
-
-                                      <td>09-May-2026</td>
-
-                                      <td>10,000</td>
-
-                                      <td>75,000</td>
-
-                                      <td>85,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/9/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>8</td>
-
-                                      <td>08-May-2026</td>
-
-                                      <td>9,000</td>
-
-                                      <td>66,000</td>
-
-                                      <td>75,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/8/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>9</td>
-
-                                      <td>07-May-2026</td>
-
-                                      <td>9,000</td>
-
-                                      <td>57,000</td>
-
-                                      <td>66,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/7/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>10</td>
-
-                                      <td>06-May-2026</td>
-
-                                      <td>7,000</td>
-
-                                      <td>50,000</td>
-
-                                      <td>57,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/6/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>11</td>
-
-                                      <td>05-May-2026</td>
-
-                                      <td>9,000</td>
-
-                                      <td>41,000</td>
-
-                                      <td>50,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/5/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>12</td>
-
-                                      <td>04-May-2026</td>
-
-                                      <td>11,000</td>
-
-                                      <td>30,000</td>
-
-                                      <td>41,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/4/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>13</td>
-
-                                      <td>03-May-2026</td>
-
-                                      <td>9,000</td>
-
-                                      <td>21,000</td>
-
-                                      <td>30,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/3/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>14</td>
-
-                                      <td>02-May-2026</td>
-
-                                      <td>11,000</td>
-
-                                      <td>10,000</td>
-
-                                      <td>21,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/2/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>15</td>
-
-                                      <td>01-May-2026</td>
-
-                                      <td>10,000</td>
-
-                                      <td>0</td>
-
-                                      <td>10,000</td>
-
-                                      <td>
-                                        <a
-                                          href="http://planner.test/entry/1/edit"
-                                          class="rounded-4 btn btn-sm btn-label-primary"
-                                        >
-                                          <i class="bx bx-edit-alt me-md-1"></i>
-
-                                          <span class="d-none d-md-inline">
-                                            Edit
-                                          </span>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/5/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>12</td>
+
+                                  <td>04-May-2026</td>
+
+                                  <td>11,000</td>
+
+                                  <td>30,000</td>
+
+                                  <td>41,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/4/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>13</td>
+
+                                  <td>03-May-2026</td>
+
+                                  <td>9,000</td>
+
+                                  <td>21,000</td>
+
+                                  <td>30,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/3/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>14</td>
+
+                                  <td>02-May-2026</td>
+
+                                  <td>11,000</td>
+
+                                  <td>10,000</td>
+
+                                  <td>21,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/2/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>15</td>
+
+                                  <td>01-May-2026</td>
+
+                                  <td>10,000</td>
+
+                                  <td>0</td>
+
+                                  <td>10,000</td>
+
+                                  <td>
+                                    <a
+                                      href="http://planner.test/entry/1/edit"
+                                      class="rounded-4 btn btn-sm btn-label-primary"
+                                    >
+                                      <i class="bx bx-edit-alt me-md-1"></i>
+
+                                      <span class="d-none d-md-inline">
+                                        Edit
+                                      </span>
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>
@@ -1688,13 +1698,20 @@
       });
     }
 
-    const gridBtn = document.getElementById("gridViewBtn");
-    const tableBtn = document.getElementById("tableViewBtn");
+    const gridViewOption = document.getElementById("gridViewOption");
+    const tableViewOption = document.getElementById("tableViewOption");
+    const currentViewLabel = document.getElementById("currentViewLabel");
 
     const gridView = document.getElementById("gridView");
     const tableView = document.getElementById("tableView");
 
-    if (!gridBtn || !tableBtn || !gridView || !tableView) {
+    if (
+      !gridViewOption ||
+      !tableViewOption ||
+      !currentViewLabel ||
+      !gridView ||
+      !tableView
+    ) {
       return;
     }
 
@@ -1702,11 +1719,11 @@
 
     setView(savedView);
 
-    gridBtn.addEventListener("click", function () {
+    gridViewOption.addEventListener("click", function () {
       setView("grid");
     });
 
-    tableBtn.addEventListener("click", function () {
+    tableViewOption.addEventListener("click", function () {
       setView("table");
     });
 
@@ -1715,19 +1732,20 @@
         gridView.classList.add("d-none");
         tableView.classList.remove("d-none");
 
-        tableBtn.classList.add("active");
-        gridBtn.classList.remove("active");
+        tableViewOption.classList.add("active");
+        gridViewOption.classList.remove("active");
+        currentViewLabel.textContent = "Table";
       } else {
         tableView.classList.add("d-none");
         gridView.classList.remove("d-none");
 
-        gridBtn.classList.add("active");
-        tableBtn.classList.remove("active");
+        gridViewOption.classList.add("active");
+        tableViewOption.classList.remove("active");
+        currentViewLabel.textContent = "Grid";
       }
 
       localStorage.setItem("entriesView", view);
     }
-
   });
 </script>
 
@@ -1933,87 +1951,79 @@
 
           const isOpen = Number(e.amount) === 0;
 
-          const lockedString = isOpen ? "Open" : "Locked";
-          const lockedIcon = isOpen ? "bx-lock-open" : "bx-lock";
-          const lockedClass = isOpen
-            ? "bg-label-success"
-            : "bg-label-secondary";
-
           const deleteButton = isOpen
             ? `
-				<button type="button"
-					class="btn btn-label-danger rounded-4 entry-delete-btn"
+				<button
+					type="button"
+					class="btn btn-sm btn-label-danger rounded-pill py-2 entry-delete-btn"
 					data-entry-id="${escapeHtml(e.id)}"
-					data-entry-date="${escapeHtml(rawDate || "")}" 
+					data-entry-date="${escapeHtml(rawDate || "")}"
 					data-entry-amount="${escapeHtml(e.amount ?? "")}"
-					>
-					<span class="icon-base bx bx-trash icon-sm me-md-2"></span> Delete
+					title="Delete entry"
+					aria-label="Delete entry"
+				>
+					<i class="bx bx-trash" aria-hidden="true"></i>
 				</button>
 			`
             : "";
 
           return `
-			<div class="col-12 col-md-6 col-xl-4">
-				<div class="card border border-light border-opacity-50 shadow-sm rounded-5 h-100">
-					<div class="card-body d-flex flex-column p-3 p-md-4">
+                <div class="col-12 col-md-6 col-xl-4">
+                  <div class="card border border-light border-opacity-50 shadow-sm rounded-5 h-100">
+                    <div class="card-body d-flex flex-column p-3 p-md-4">
 
-						<div class="d-flex align-items-center justify-content-between mb-3">
-							<div>
-								<h6 class="mb-0 text-body">${date}</h6>
-								<small class="text-muted">${weekday}</small>
-							</div>
+                      <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                          <h6 class="mb-0 text-body">${date}</h6>
+                          <small class="text-muted">${weekday}</small>
+                        </div>
 
-							<div class="d-inline-flex align-items-center gap-1">
-								<span class="badge rounded-pill bg-primary px-3 py-2">
-									${idx + 1}
-								</span>
+                        <div class="d-inline-flex align-items-center gap-1">
+                          <span class="badge rounded-pill bg-primary px-3 py-2">
+                            ${idx + 1}
+                          </span>
 
-								<span class="badge ${lockedClass} rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
-									<i class="bx ${lockedIcon}" aria-hidden="true"></i>
-									<span class="lh-1">${lockedString}</span>
-								</span>
-							</div>
-						</div>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-label-primary rounded-pill py-2 entry-edit-btn"
+                            data-entry-id="${escapeHtml(e.id)}"
+                            data-entry-date="${escapeHtml(rawDate || "")}"
+                            data-entry-amount="${escapeHtml(e.amount ?? "")}"
+                            title="Edit entry"
+                            aria-label="Edit entry"
+                          >
+                            <i class="bx bx-edit-alt" aria-hidden="true"></i>
+                          </button>
 
-						<div class="mb-3 bg-primary bg-opacity-10 rounded-4 border border-primary border-opacity-10 p-2 text-center">
-							<small class="text-muted text-primary d-block mb-1">Amount</small>
-							<h3 class="mb-0 text-primary">${amount}</h3>
-						</div>
+                          ${deleteButton}
+                        </div>
+                      </div>
 
-						<div class="row g-2 mb-3">
-							<div class="col-6">
-								<div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
-                                    <small class="text-muted d-block mb-1">Collected</small>
-                                    <h6 class="mb-0 text-body">${collected}</h6>
-								</div>
-							</div>
+                      <div class="mb-3 bg-primary bg-opacity-10 rounded-4 border border-primary border-opacity-10 p-2 text-center">
+                        <small class="text-muted text-primary d-block mb-1">Amount</small>
+                        <h3 class="mb-0 text-primary">${amount}</h3>
+                      </div>
 
-							<div class="col-6">
-								<div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
-                                    <small class="text-muted d-block mb-1">Remaining</small>
-                                    <h6 class="mb-0 text-body">${remaining}</h6>
-								</div>
-							</div>
-						</div>
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
+                              <small class="text-muted d-block mb-1">Collected</small>
+                              <h6 class="mb-0 text-body">${collected}</h6>
+                          </div>
+                        </div>
 
-						<div class="mt-auto d-grid gap-2">
-							<button
-								 type="button"
-								 class="btn btn-primary rounded-4 entry-edit-btn"
-								 data-entry-id="${escapeHtml(e.id)}"
-								 data-entry-date="${escapeHtml(rawDate || "")}" 
-								 data-entry-amount="${escapeHtml(e.amount ?? "")}">
-								<span class="icon-base bx bx-edit-alt icon-sm me-md-2"></span>
-								Edit
-							</button>
+                        <div class="col-6">
+                          <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 h-100 text-center">
+                                              <small class="text-muted d-block mb-1">Remaining</small>
+                                              <h6 class="mb-0 text-body">${remaining}</h6>
+                          </div>
+                        </div>
+                      </div>
 
-							${deleteButton}
-						</div>
-
-					</div>
-				</div>
-			</div>
-		`;
+                    </div>
+                  </div>
+                </div>
+              `;
         })
         .join("");
     }
@@ -2486,16 +2496,15 @@
 
           // show/hide pagination and view controls when no entries
           const perPage = document.getElementById("perPageSelect");
-          const gridBtnControl = document.getElementById("gridViewBtn");
-          const tableBtnControl = document.getElementById("tableViewBtn");
+          const viewDropdownControl = document.getElementById(
+            "entriesViewDropdown",
+          );
           if (count === 0) {
             if (perPage) perPage.style.display = "none";
-            if (gridBtnControl) gridBtnControl.style.display = "none";
-            if (tableBtnControl) tableBtnControl.style.display = "none";
+            if (viewDropdownControl) viewDropdownControl.style.display = "none";
           } else {
             if (perPage) perPage.style.display = "";
-            if (gridBtnControl) gridBtnControl.style.display = "";
-            if (tableBtnControl) tableBtnControl.style.display = "";
+            if (viewDropdownControl) viewDropdownControl.style.display = "";
           }
 
           // render entries into grid and table (replace static samples)
@@ -2505,11 +2514,11 @@
           console.error("Failed to load entries", err);
           // hide controls and render empty
           const perPage = document.getElementById("perPageSelect");
-          const gridBtnControl = document.getElementById("gridViewBtn");
-          const tableBtnControl = document.getElementById("tableViewBtn");
+          const viewDropdownControl = document.getElementById(
+            "entriesViewDropdown",
+          );
           if (perPage) perPage.style.display = "none";
-          if (gridBtnControl) gridBtnControl.style.display = "none";
-          if (tableBtnControl) tableBtnControl.style.display = "none";
+          if (viewDropdownControl) viewDropdownControl.style.display = "none";
 
           renderEntriesGrid([]);
           renderEntriesTable([]);
