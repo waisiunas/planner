@@ -780,9 +780,7 @@
             return;
           }
 
-          let dataRecords = "";
-
-          dataRecords = data
+          const dataRecords = data
             .map((stakeholder, i) => {
               const status = stakeholder.is_active ? "Active" : "Inactive";
               const stakeholderTypeTitle =
@@ -790,37 +788,45 @@
                 stakeholder.stakeholder_type_id ||
                 "";
               return `
-              <tr>
-                <td>${i + 1}</td>
-                <td>${escapeHtml(stakeholder.name || "")}</td>
-                <td>${escapeHtml(stakeholderTypeTitle)}</td>
-                <td>${escapeHtml(stakeholder.default_amount ?? 0)}</td>
-                <td><span class="badge bg-label-primary me-1">${status}</span></td>
-                <td>
-                  <div class="d-flex gap-2 flex-wrap">
-                    <button type="button" class="btn btn-sm btn-label-primary stakeholder-edit-btn" data-stakeholder-id="${stakeholder.id || ""}" data-stakeholder-name="${escapeHtml(stakeholder.name || "")}" data-stakeholder-default-amount="${stakeholder.default_amount ?? ""}" data-stakeholder-type-id="${stakeholder.stakeholder_type_id ?? ""}" data-stakeholder-is-active="${String(stakeholder.is_active)}"><i class="bx bx-edit-alt me-md-1"></i><span class="d-none d-md-inline">Edit</span></button>
-                    <button type="button" class="btn btn-sm btn-label-danger stakeholder-delete-btn" data-stakeholder-id="${stakeholder.id || ""}" data-stakeholder-name="${escapeHtml(stakeholder.name || "")}"><i class="bx bx-trash me-md-1"></i><span class="d-none d-md-inline">Delete</span></button>
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card border border-light border-opacity-50 shadow-sm rounded-5 h-100">
+                  <div class="card-body d-flex flex-column p-4">
+                    <div class="d-flex align-items-start justify-content-between gap-2 mb-4">
+                      <div class="d-flex align-items-center gap-3">
+                        <span class="avatar avatar-md">
+                          <span class="avatar-initial rounded-4 bg-label-primary">
+                            <i class="bx bx-group"></i>
+                          </span>
+                        </span>
+                        <div>
+                          <h5 class="mb-1">${escapeHtml(stakeholder.name || "")}</h5>
+                          <span class="badge bg-label-info rounded-pill">${escapeHtml(stakeholderTypeTitle)}</span>
+                        </div>
+                      </div>
+                      <div class="d-inline-flex align-items-center gap-1">
+                        <span class="badge bg-label-primary rounded-pill">${i + 1}</span>
+                        <span class="badge bg-label-secondary rounded-pill">${status}</span>
+                      </div>
+                    </div>
+                    <div class="p-3 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 mb-4">
+                      <small class="text-muted d-block mb-1">Default amount</small>
+                      <h5 class="mb-0 text-body">${escapeHtml(stakeholder.default_amount ?? 0)}</h5>
+                    </div>
+                    <div class="mt-auto d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-primary rounded-4 flex-fill stakeholder-edit-btn" data-stakeholder-id="${stakeholder.id || ""}" data-stakeholder-name="${escapeHtml(stakeholder.name || "")}" data-stakeholder-default-amount="${stakeholder.default_amount ?? ""}" data-stakeholder-type-id="${stakeholder.stakeholder_type_id ?? ""}" data-stakeholder-is-active="${String(stakeholder.is_active)}"><i class="bx bx-edit-alt me-1"></i>Edit</button>
+                    ${
+                      !stakeholder.is_active
+                        ? `<button type="button" class="btn btn-sm btn-label-danger rounded-4 flex-fill stakeholder-delete-btn" data-stakeholder-id="${stakeholder.id || ""}" data-stakeholder-name="${escapeHtml(stakeholder.name || "")}"><i class="bx bx-trash me-1"></i>Delete</button>`
+                        : ""
+                    }
                   </div>
-                </td>
-              </tr>`;
+                  </div>
+                </div>
+              </div>`;
             })
             .join("");
 
-          const dataContainerElement = `<table class="table table-hover table-bordered m-0">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Default Amount</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    ${dataRecords}
-                    </tbody>
-                  </table>`;
+          const dataContainerElement = `<div class="row g-4">${dataRecords}</div>`;
 
           dataViewElement.innerHTML = dataContainerElement;
         }
