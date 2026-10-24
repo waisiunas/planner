@@ -161,15 +161,18 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <ul class="nav nav-tabs mb-4" role="tablist">
+                      <ul class="nav nav-tabs flex-nowrap overflow-auto mb-4" role="tablist">
                         <li class="nav-item" role="presentation">
-                          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#goalTab" type="button" role="tab">Goal</button>
+                          <button class="nav-link active text-nowrap" data-bs-toggle="tab" data-bs-target="#goalTab" type="button" role="tab">Goal</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rateTab" type="button" role="tab">Rate</button>
+                          <button class="nav-link text-nowrap" data-bs-toggle="tab" data-bs-target="#rateTab" type="button" role="tab">Rate</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#extraTab" type="button" role="tab">Extra</button>
+                          <button class="nav-link text-nowrap" data-bs-toggle="tab" data-bs-target="#extraTab" type="button" role="tab">Extra</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link text-nowrap" data-bs-toggle="tab" data-bs-target="#summaryTab" type="button" role="tab">Summary</button>
                         </li>
                       </ul>
 
@@ -212,20 +215,26 @@
                               </div>
                             </div>
                           </form>
-                          <div class="table-responsive mt-4">
+                          <div class="mt-4">
                             <h6 class="mb-3">Configured daily rates</h6>
-                            <table class="table table-sm mb-0">
-                              <thead>
-                                <tr>
-                                  <th>Effective from</th>
-                                  <th class="text-end">Daily amount</th>
-                                  <th class="text-end">Total collected</th>
-                                </tr>
-                              </thead>
-                              <tbody id="ratesTableBody">
-                                <tr><td colspan="3" class="text-muted">Loading...</td></tr>
-                              </tbody>
-                            </table>
+                            <div class="table-responsive d-none d-md-block">
+                              <table class="table table-sm mb-0">
+                                <thead>
+                                  <tr>
+                                    <th>Effective from</th>
+                                    <th class="text-end">Daily amount</th>
+                                    <th class="text-end">Total collected</th>
+                                    <th class="text-end">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="ratesTableBody">
+                                  <tr><td colspan="4" class="text-muted">Loading...</td></tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div id="ratesCards" class="row g-3 d-md-none">
+                              <div class="col-12 text-muted">Loading...</div>
+                            </div>
                           </div>
                         </div>
 
@@ -245,19 +254,60 @@
                               </div>
                             </div>
                           </form>
+                          <div class="mt-4">
+                            <h6 class="mb-3">Extra contributions</h6>
+                            <div class="table-responsive d-none d-md-block">
+                              <table class="table table-sm mb-0">
+                                <thead>
+                                  <tr>
+                                    <th>Date</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-end">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="extrasTableBody">
+                                  <tr><td colspan="3" class="text-muted">Loading...</td></tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div id="extrasCards" class="row g-3 d-md-none">
+                              <div class="col-12 text-muted">Loading...</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="summaryTab" role="tabpanel">
+                          <div class="table-responsive">
+                            <h6 class="mb-3">Configured rates</h6>
+                            <table class="table table-sm mb-0">
+                              <thead>
+                                <tr>
+                                  <th>Effective from</th>
+                                  <th class="text-end">Total collected</th>
+                                </tr>
+                              </thead>
+                              <tbody id="summaryRatesTableBody">
+                                <tr><td colspan="2" class="text-muted">Loading...</td></tr>
+                              </tbody>
+                            </table>
+                          </div>
                           <div class="table-responsive mt-4">
                             <h6 class="mb-3">Extra contributions</h6>
                             <table class="table table-sm mb-0">
                               <thead>
                                 <tr>
                                   <th>Date</th>
-                                  <th class="text-end">Amount</th>
+                                  <th class="text-end">Extra collected</th>
                                 </tr>
                               </thead>
-                              <tbody id="extrasTableBody">
+                              <tbody id="summaryExtrasTableBody">
                                 <tr><td colspan="2" class="text-muted">Loading...</td></tr>
                               </tbody>
                             </table>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center border-top mt-4 pt-3">
+                            <strong>Total collected amount</strong>
+                            <strong id="summaryTotalCollected" class="text-primary">0.00</strong>
                           </div>
                         </div>
                       </div>
@@ -479,6 +529,8 @@
       let currentGoal = null;
       let currentRates = [];
       let currentTransactions = [];
+      let editingTransactionId = null;
+      let editingRateId = null;
 
       function setGoalForm(goal) {
         document.getElementById("goalName").value = goal?.goal_name || "";
@@ -487,12 +539,22 @@
           goal?.target_amount ?? "";
       }
 
+      function formatAmount(amount) {
+        return Number(amount || 0).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      }
+
       function renderRatesTable(rates) {
         const tableBody = document.getElementById("ratesTableBody");
-        if (!tableBody) return;
+        const cards = document.getElementById("ratesCards");
+        if (!tableBody || !cards) return;
         if (!rates.length) {
           tableBody.innerHTML =
-            '<tr><td colspan="3" class="text-muted">No daily rates configured.</td></tr>';
+            '<tr><td colspan="4" class="text-muted">No daily rates configured.</td></tr>';
+          cards.innerHTML =
+            '<div class="col-12 text-muted">No daily rates configured.</div>';
           return;
         }
         tableBody.innerHTML = rates
@@ -508,7 +570,50 @@
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}</td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-sm btn-primary rate-edit-btn" data-rate-id="${escapeHtml(rate.id)}" aria-label="Edit daily rate">
+                    <i class="bx bx-edit-alt"></i>
+                  </button>
+                </td>
               </tr>
+            `,
+          )
+          .join("");
+        cards.innerHTML = rates
+          .map(
+            (rate, index) => `
+              <div class="col-12">
+                <div class="card rounded-4 border shadow-none h-100">
+                  <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                      <div class="fw-semibold">
+                        ${formatDateDMY(rate.effective_from)}
+                        <small class="d-block text-muted fw-normal">${parseDateOnly(rate.effective_from).toLocaleDateString(undefined, { weekday: "long" })}</small>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-label-primary rounded-pill d-inline-flex align-items-center justify-content-center" style="min-width: 32px; height: 32px;">${index + 1}</span>
+                        <button type="button" class="btn btn-sm btn-icon btn-primary rounded-pill d-inline-flex align-items-center justify-content-center rate-edit-btn" style="width: 32px; height: 32px;" data-rate-id="${escapeHtml(rate.id)}" aria-label="Edit daily rate">
+                          <i class="bx bx-edit-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <div class="p-3 bg-light bg-opacity-25 border border-light border-opacity-10 rounded-4 h-100 text-center">
+                          <small class="text-muted d-block">Daily amount</small>
+                          <span class="fw-semibold">${formatAmount(rate.daily_amount)}</span>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="p-3 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 rounded-4 h-100 text-center">
+                          <small class="text-muted d-block">Total collected</small>
+                          <span class="fw-semibold">${formatAmount(rate.total_collected)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             `,
           )
           .join("");
@@ -516,10 +621,13 @@
 
       function renderExtrasTable(transactions) {
         const tableBody = document.getElementById("extrasTableBody");
-        if (!tableBody) return;
+        const cards = document.getElementById("extrasCards");
+        if (!tableBody || !cards) return;
         if (!transactions.length) {
           tableBody.innerHTML =
-            '<tr><td colspan="2" class="text-muted">No extra contributions configured.</td></tr>';
+            '<tr><td colspan="3" class="text-muted">No extra contributions configured.</td></tr>';
+          cards.innerHTML =
+            '<div class="col-12 text-muted">No extra contributions configured.</div>';
           return;
         }
         tableBody.innerHTML = transactions
@@ -531,10 +639,108 @@
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}</td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-sm btn-primary extra-edit-btn" data-transaction-id="${escapeHtml(transaction.id)}" aria-label="Edit extra contribution">
+                    <i class="bx bx-edit-alt"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-label-danger extra-delete-btn" data-transaction-id="${escapeHtml(transaction.id)}" aria-label="Delete extra contribution">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
               </tr>
             `,
           )
           .join("");
+        cards.innerHTML = transactions
+          .map(
+            (transaction, index) => `
+              <div class="col-12">
+                <div class="card rounded-4 border shadow-none h-100">
+                  <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                      <div class="fw-semibold">
+                        ${formatDateDMY(transaction.transaction_date)}
+                        <small class="d-block text-muted fw-normal">${parseDateOnly(transaction.transaction_date).toLocaleDateString(undefined, { weekday: "long" })}</small>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-label-primary rounded-pill d-inline-flex align-items-center justify-content-center" style="min-width: 32px; height: 32px;">${index + 1}</span>
+                        <div class="dropdown">
+                          <button type="button" class="btn btn-sm btn-icon btn-label-secondary rounded-pill d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Extra contribution actions">
+                            <i class="bx bx-dots-vertical-rounded"></i>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                              <button type="button" class="dropdown-item extra-edit-btn" data-transaction-id="${escapeHtml(transaction.id)}">
+                                <i class="bx bx-edit-alt me-2"></i>Edit
+                              </button>
+                            </li>
+                            <li>
+                              <button type="button" class="dropdown-item text-danger extra-delete-btn" data-transaction-id="${escapeHtml(transaction.id)}">
+                                <i class="bx bx-trash me-2"></i>Delete
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-2 bg-light bg-opacity-25 rounded-4 border border-light border-opacity-10 d-flex justify-content-between align-items-center">
+                      <span class="">Amount</span>
+                      <span class="fw-semibold text-heading">${formatAmount(transaction.amount)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      function renderSummary(rates, transactions) {
+        const ratesBody = document.getElementById("summaryRatesTableBody");
+        const extrasBody = document.getElementById("summaryExtrasTableBody");
+        const totalEl = document.getElementById("summaryTotalCollected");
+        const configuredTotal = rates.reduce(
+          (total, rate) => total + Number(rate.total_collected || 0),
+          0,
+        );
+        const extraTotal = transactions.reduce(
+          (total, transaction) => total + Number(transaction.amount || 0),
+          0,
+        );
+
+        if (ratesBody) {
+          ratesBody.innerHTML = rates.length
+            ? rates
+                .map(
+                  (rate) => `
+                    <tr>
+                      <td>${formatDateDMY(rate.effective_from)}</td>
+                      <td class="text-end">${formatAmount(rate.total_collected)}</td>
+                    </tr>
+                  `,
+                )
+                .join("")
+            : '<tr><td colspan="2" class="text-muted">No daily rates configured.</td></tr>';
+        }
+
+        if (extrasBody) {
+          extrasBody.innerHTML = transactions.length
+            ? transactions
+                .map(
+                  (transaction) => `
+                    <tr>
+                      <td>${formatDateDMY(transaction.transaction_date)}</td>
+                      <td class="text-end">${formatAmount(transaction.amount)}</td>
+                    </tr>
+                  `,
+                )
+                .join("")
+            : '<tr><td colspan="2" class="text-muted">No extra contributions configured.</td></tr>';
+        }
+
+        if (totalEl) {
+          totalEl.textContent = formatAmount(configuredTotal + extraTotal);
+        }
       }
 
       async function saveGoal(event) {
@@ -587,26 +793,95 @@
         const transactionDate = dateInput.value;
         if (!amount || amount <= 0 || !transactionDate) return;
 
+        const isEditing = Boolean(editingTransactionId);
         saveButton.disabled = true;
         try {
-          const { error } = await supabase
-            .from("savings_transactions")
-            .insert({
-              goal_id: currentGoal.id,
-              amount,
-              transaction_date: transactionDate,
-            });
+          const payload = {
+            goal_id: currentGoal.id,
+            amount,
+            transaction_date: transactionDate,
+          };
+          const query = editingTransactionId
+            ? supabase
+                .from("savings_transactions")
+                .update(payload)
+                .eq("id", editingTransactionId)
+                .eq("goal_id", currentGoal.id)
+            : supabase.from("savings_transactions").insert(payload);
+          const { error } = await query;
           if (error) throw error;
 
           amountInput.value = "";
           dateInput.value = "";
-          showAlert("Extra contribution saved successfully.", "success");
+          editingTransactionId = null;
+          saveButton.textContent = "Add Extra";
+          showAlert(
+            isEditing
+              ? "Extra contribution updated successfully."
+              : "Extra contribution saved successfully.",
+            "success",
+          );
           await loadSavingsGoal();
         } catch (error) {
           console.error("Failed to save extra contribution:", error);
           showAlert(`Failed to save extra contribution: ${error.message || error}`);
         } finally {
           saveButton.disabled = false;
+        }
+      }
+
+      function editExtraContribution(transactionId) {
+        const transaction = currentTransactions.find(
+          (item) => String(item.id) === String(transactionId),
+        );
+        if (!transaction) {
+          showAlert("The extra contribution could not be found.");
+          return;
+        }
+
+        editingTransactionId = transaction.id;
+        document.getElementById("extraAmount").value = transaction.amount;
+        document.getElementById("extraDate").value = transaction.transaction_date;
+        document.getElementById("saveExtraButton").textContent = "Update Extra";
+        document.getElementById("extraAmount").focus();
+      }
+
+      async function deleteExtraContribution(transactionId) {
+        const transaction = currentTransactions.find(
+          (item) => String(item.id) === String(transactionId),
+        );
+        if (!transaction) {
+          showAlert("The extra contribution could not be found.");
+          return;
+        }
+        if (
+          !window.confirm(
+            `Delete the extra contribution of ${Number(transaction.amount).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })} from ${formatDateDMY(transaction.transaction_date)}?`,
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const { error } = await supabase
+            .from("savings_transactions")
+            .delete()
+            .eq("id", transaction.id)
+            .eq("goal_id", currentGoal.id);
+          if (error) throw error;
+          if (String(editingTransactionId) === String(transaction.id)) {
+            editingTransactionId = null;
+            document.getElementById("extraForm").reset();
+            document.getElementById("saveExtraButton").textContent = "Add Extra";
+          }
+          showAlert("Extra contribution deleted successfully.", "success");
+          await loadSavingsGoal();
+        } catch (error) {
+          console.error("Failed to delete extra contribution:", error);
+          showAlert(`Failed to delete extra contribution: ${error.message || error}`);
         }
       }
 
@@ -622,22 +897,35 @@
         const saveButton = document.getElementById("saveRateButton");
         if (!amount || amount <= 0 || !effectiveFrom) return;
 
+        const isEditing = Boolean(editingRateId);
         saveButton.disabled = true;
         try {
-          const { error } = await supabase
-            .from("savings_daily_rates")
-            .upsert(
-              {
-                goal_id: currentGoal.id,
-                daily_amount: amount,
-                effective_from: effectiveFrom,
-              },
-              { onConflict: "goal_id,effective_from" },
-            );
+          const payload = {
+            goal_id: currentGoal.id,
+            daily_amount: amount,
+            effective_from: effectiveFrom,
+          };
+          const query = editingRateId
+            ? supabase
+                .from("savings_daily_rates")
+                .update(payload)
+                .eq("id", editingRateId)
+                .eq("goal_id", currentGoal.id)
+            : supabase
+                .from("savings_daily_rates")
+                .upsert(payload, { onConflict: "goal_id,effective_from" });
+          const { error } = await query;
           if (error) throw error;
           document.getElementById("dailyAmount").value = "";
           document.getElementById("rateEffectiveFrom").value = "";
-          showAlert("Daily rate saved successfully.", "success");
+          editingRateId = null;
+          saveButton.textContent = "Add Rate";
+          showAlert(
+            isEditing
+              ? "Daily rate updated successfully."
+              : "Daily rate saved successfully.",
+            "success",
+          );
           await loadSavingsGoal();
         } catch (error) {
           console.error("Failed to save daily rate:", error);
@@ -645,6 +933,22 @@
         } finally {
           saveButton.disabled = false;
         }
+      }
+
+      function editDailyRate(rateId) {
+        const rate = currentRates.find(
+          (item) => String(item.id) === String(rateId),
+        );
+        if (!rate) {
+          showAlert("The daily rate could not be found.");
+          return;
+        }
+
+        editingRateId = rate.id;
+        document.getElementById("dailyAmount").value = rate.daily_amount;
+        document.getElementById("rateEffectiveFrom").value = rate.effective_from;
+        document.getElementById("saveRateButton").textContent = "Update Rate";
+        document.getElementById("dailyAmount").focus();
       }
 
       async function loadSavingsGoal() {
@@ -663,6 +967,7 @@
           setGoalForm(null);
           renderRatesTable([]);
           renderExtrasTable([]);
+          renderSummary([], []);
           throw new Error("No savings goal was found. Create one below.");
         }
         currentGoal = goal;
@@ -672,12 +977,12 @@
           await Promise.all([
             supabase
               .from("savings_daily_rates")
-              .select("daily_amount, effective_from")
+              .select("id, daily_amount, effective_from")
               .eq("goal_id", goal.id)
               .order("effective_from", { ascending: true }),
             supabase
               .from("savings_transactions")
-              .select("amount, transaction_date")
+              .select("id, amount, transaction_date")
               .eq("goal_id", goal.id)
               .order("transaction_date", { ascending: true }),
           ]);
@@ -693,6 +998,7 @@
         }));
         renderRatesTable(currentRates);
         renderExtrasTable(currentTransactions);
+        renderSummary(currentRates, currentTransactions);
 
         const achievements = currentTransactions
           .map((transaction) => {
@@ -845,6 +1151,27 @@
         document.getElementById("goalForm")?.addEventListener("submit", saveGoal);
         document.getElementById("rateForm")?.addEventListener("submit", saveDailyRate);
         document.getElementById("extraForm")?.addEventListener("submit", saveExtraContribution);
+        const handleExtraAction = (event) => {
+          const editButton = event.target.closest(".extra-edit-btn");
+          if (editButton) {
+            editExtraContribution(editButton.dataset.transactionId);
+            return;
+          }
+          const deleteButton = event.target.closest(".extra-delete-btn");
+          if (deleteButton) {
+            deleteExtraContribution(deleteButton.dataset.transactionId);
+          }
+        };
+        const handleRateAction = (event) => {
+          const editButton = event.target.closest(".rate-edit-btn");
+          if (editButton) {
+            editDailyRate(editButton.dataset.rateId);
+          }
+        };
+        document.getElementById("extrasTableBody")?.addEventListener("click", handleExtraAction);
+        document.getElementById("extrasCards")?.addEventListener("click", handleExtraAction);
+        document.getElementById("ratesTableBody")?.addEventListener("click", handleRateAction);
+        document.getElementById("ratesCards")?.addEventListener("click", handleRateAction);
         try {
           await loadSavingsGoal();
         } catch (error) {
