@@ -1,0 +1,452 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-assets-path="../../assets/"
+  data-template="vertical-menu-template-starter"
+  data-bs-theme="light"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+
+    <title>Cycles</title>
+
+    <meta
+      name="supabase-key"
+      content="sb_publishable_E6ypS6wMqOvSeiFbGZCJUQ_KDXIUp2K"
+    />
+
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/img/favicon/favicon.ico"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../../assets/vendor/fonts/iconify-icons.css" />
+    <link
+      rel="stylesheet"
+      href="../../assets/vendor/libs/pickr/pickr-themes.css"
+    />
+    <link rel="stylesheet" href="../../assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="../../assets/css/demo.css" />
+    <link
+      rel="stylesheet"
+      href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
+    />
+
+    <script src="../../assets/vendor/js/helpers.js"></script>
+    <script src="../../assets/vendor/js/template-customizer.js"></script>
+    <script src="../../assets/js/config.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/umd/supabase.min.js"></script>
+
+    <script>
+      const SUPABASE_URL = "https://pfqqsyboqnscqhblhnwx.supabase.co";
+
+      const SUPABASE_KEY = document.querySelector(
+        'meta[name="supabase-key"]',
+      ).content;
+
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      // Authentication guard
+      (async function checkAuth() {
+        try {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+
+          if (!session) {
+            window.location.href = "./login.html";
+          }
+        } catch (err) {
+          console.error("Auth guard check failed:", err);
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Sidebar -->
+        <div data-include-partial="../../partials/sidebar.html"></div>
+
+        <div class="layout-page">
+          <!-- Navbar -->
+          <div data-include-partial="../../partials/topbar.html"></div>
+
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <!-- Page Header -->
+              <div class="row mb-6">
+                <div class="col-12">
+                  <h4 class="mb-0">Financial Cycles</h4>
+                </div>
+              </div>
+
+              <!-- Alerts -->
+              <div class="mt-3" id="alertsContainer"></div>
+
+              <!-- Financial Cycles Table -->
+              <div class="card rounded-5">
+                <div class="card-body p-3 p-md-6" id="dataView">
+                  <div class="text-center p-4">Loading financial cycles...</div>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", async function () {
+                if (window.__partialsReady) {
+                  try {
+                    await window.__partialsReady;
+                    setSidebarActiveMenuItem("financialCycleMenuItem");
+                  } catch (err) {
+                    console.error("Failed to load partials:", err);
+                  }
+                }
+              });
+            </script>
+
+            <!-- Footer -->
+            <div data-include-partial="../../partials/footer.html"></div>
+
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout-overlay layout-menu-toggle"></div>
+      <div class="drag-target"></div>
+    </div>
+
+    <!-- Core JS -->
+    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../../assets/vendor/js/bootstrap.js"></script>
+    <script src="../../assets/vendor/libs/@algolia/autocomplete-js.js"></script>
+    <script src="../../assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="../../assets/vendor/js/menu.js"></script>
+
+    <!-- Main JS -->
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/functions.js"></script>
+    <script src="../../assets/js/include-partials.js"></script>
+
+    <!-- Financial Cycles Display Only -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Alert helper
+        function showAlert(type, message) {
+          const alertsContainer = document.querySelector("#alertsContainer");
+
+          if (!alertsContainer) return;
+
+          alertsContainer.innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show rounded-4" role="alert">
+        ${escapeHtml(message)}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close">
+        </button>
+      </div>
+    `;
+
+          setTimeout(() => {
+            const alertElement = alertsContainer.querySelector(".alert");
+
+            if (alertElement) {
+              bootstrap.Alert.getOrCreateInstance(alertElement).close();
+            }
+          }, 6000);
+        }
+
+        // Load financial cycles
+        async function loadCycles() {
+          const dataView = document.querySelector("#dataView");
+
+          try {
+            dataView.innerHTML = `
+        <div class="text-center p-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 mb-0">Loading financial cycles...</p>
+        </div>
+      `;
+
+            const { data, error } = await supabase
+              .from("financial_cycles")
+              .select(
+                `
+          id,
+          opening_date,
+          closing_date,
+          opening_available_fund,
+          closing_available_fund,
+          opening_loan_given,
+          closing_loan_given,
+          opening_loan_taken,
+          closing_loan_taken,
+          is_active,
+          created_at
+        `,
+              )
+              .order("id", { ascending: true });
+
+            if (error) throw error;
+
+            renderCycles(data || []);
+          } catch (err) {
+            console.error("Failed to load financial cycles:", err);
+
+            dataView.innerHTML = `
+        <div class="text-center alert alert-danger m-0 rounded-3">
+          Failed to load financial cycles.
+        </div>
+      `;
+
+            showAlert(
+              "danger",
+              "Failed to load financial cycles: " +
+                (err.message || JSON.stringify(err)),
+            );
+          }
+        }
+
+        // Render financial cycles
+        function renderCycles(data) {
+          const dataView = document.querySelector("#dataView");
+
+          if (!data || data.length === 0) {
+            dataView.innerHTML = `
+      <div class="text-center alert alert-info m-0 rounded-3">
+        No financial cycles found!
+      </div>
+    `;
+            return;
+          }
+
+          const cards = data
+            .map((cycle, index) => {
+              const status = cycle.is_active ? "Active" : "Inactive";
+
+              const statusClass = cycle.is_active
+                ? "bg-label-success"
+                : "bg-label-secondary";
+
+              return `
+      <div class="col-12 col-md-6 col-xl-4">
+
+        <div class="card h-100 rounded-4 border shadow-sm">
+
+          <!-- Card Header -->
+          <div class="card-header d-flex justify-content-between align-items-center border-bottom p-4">
+
+            <div>
+              <h5 class="mb-1">
+                Financial Cycle #${index + 1}
+              </h5>
+
+              <small class="text-muted">
+                ID: ${escapeHtml(cycle.id)}
+              </small>
+            </div>
+
+            <span class="badge ${statusClass}">
+              ${status}
+            </span>
+
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body p-4">
+
+            <!-- Cycle Dates -->
+            <div class="mb-4">
+
+              <h6 class="text-primary mb-3">
+                <i class="bx bx-calendar me-1"></i>
+                Cycle Duration
+              </h6>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Opening Date</span>
+                <strong>${formatDate(cycle.opening_date)}</strong>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Closing Date</span>
+                <strong>${formatDate(cycle.closing_date)}</strong>
+              </div>
+
+            </div>
+
+            <hr />
+
+            <!-- Available Funds -->
+            <div class="mb-4">
+
+              <h6 class="text-primary mb-3">
+                <i class="bx bx-wallet me-1"></i>
+                Available Funds
+              </h6>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Opening Fund</span>
+                <strong>
+                  ${formatNumber(cycle.opening_available_fund)}
+                </strong>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Closing Fund</span>
+                <strong>
+                  ${formatNumber(cycle.closing_available_fund)}
+                </strong>
+              </div>
+
+            </div>
+
+            <hr />
+
+            <!-- Loans Given -->
+            <div class="mb-4">
+
+              <h6 class="text-primary mb-3">
+                <i class="bx bx-transfer me-1"></i>
+                Loans Given
+              </h6>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Opening</span>
+                <strong>
+                  ${formatNumber(cycle.opening_loan_given)}
+                </strong>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Closing</span>
+                <strong>
+                  ${formatNumber(cycle.closing_loan_given)}
+                </strong>
+              </div>
+
+            </div>
+
+            <hr />
+
+            <!-- Loans Taken -->
+            <div>
+
+              <h6 class="text-primary mb-3">
+                <i class="bx bx-money me-1"></i>
+                Loans Taken
+              </h6>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Opening</span>
+                <strong>
+                  ${formatNumber(cycle.opening_loan_taken)}
+                </strong>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Closing</span>
+                <strong>
+                  ${formatNumber(cycle.closing_loan_taken)}
+                </strong>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    `;
+            })
+            .join("");
+
+          dataView.innerHTML = `
+    <div class="row g-4">
+      ${cards}
+    </div>
+  `;
+        }
+
+        // Format numbers
+        function formatNumber(value) {
+          if (value === null || value === undefined) {
+            return "-";
+          }
+
+          return Number(value).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        }
+
+        // Format dates
+        function formatDate(value) {
+          if (!value) return "-";
+
+          const date = new Date(value + "T00:00:00");
+
+          return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+        }
+
+        // Escape HTML
+        function escapeHtml(value) {
+          return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
+        }
+
+        // Logout handler
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", async function (e) {
+            e.preventDefault();
+
+            try {
+              await supabase.auth.signOut();
+              window.location.href = "./login.html";
+            } catch (err) {
+              console.error("Sign out failed:", err);
+            }
+          });
+        }
+
+        // Initial load
+        loadCycles();
+      });
+    </script>
+  </body>
+</html>
